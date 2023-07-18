@@ -1,6 +1,6 @@
-﻿using Tako.Definitions.Game.Players;
+﻿using Tako.Common.Logging;
+using Tako.Definitions.Game.Players;
 using Tako.Definitions.Game.World;
-using Tako.Definitions.Logging;
 using Tako.Definitions.Network;
 using Tako.Definitions.Network.Connections;
 using Tako.Server.Logging;

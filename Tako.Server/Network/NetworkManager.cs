@@ -1,6 +1,6 @@
 ﻿using System.Net;
 using System.Net.Sockets;
-using Tako.Definitions.Logging;
+using Tako.Common.Logging;
 using Tako.Definitions.Network;
 using Tako.Definitions.Network.Connections;
 using Tako.Definitions.Network.Packets;
@@ -49,7 +49,7 @@ public class NetworkManager : INetworkManager
 	/// <inheritdoc/>
 	public void SendToAll(IPacket packet)
 	{
-		packet.Serialize();
+		packet.Serialize(new Common.Network.Serialization.NetworkWriter());
 		foreach (var connection in Connections)
 			connection.Send(ReadOnlySpan<byte>.Empty);
 	}

@@ -1,4 +1,4 @@
-﻿using Tako.Definitions.Logging;
+﻿using Tako.Common.Logging;
 
 namespace Tako.Server.Logging;
 

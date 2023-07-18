@@ -1,4 +1,4 @@
-﻿namespace Tako.Definitions.Logging;
+﻿namespace Tako.Common.Logging;
 
 /// <summary>
 /// An interface for a generic logger for a given class.

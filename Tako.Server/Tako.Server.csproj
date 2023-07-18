@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Tako.Common\Tako.Common.csproj" />
     <ProjectReference Include="..\Tako.Definitions\Tako.Definitions.csproj" />
   </ItemGroup>
 
