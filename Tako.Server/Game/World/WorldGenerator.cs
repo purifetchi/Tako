@@ -86,7 +86,7 @@ public class WorldGenerator
 		{
 			for (var z = 0; z < _dimensions.Z; z++)
 			{
-				for (var y = 0; y < _dimensions.Y / 2; y++)
+				for (var y = 10; y < 11; y++)
 				{
 					world.SetBlock(new Vector3Int(x, y, z), (byte)Random.Shared.Next(1, 10));
 				}

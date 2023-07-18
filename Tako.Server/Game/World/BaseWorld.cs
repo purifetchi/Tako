@@ -42,14 +42,14 @@ public class BaseWorld : IWorld
 	/// <inheritdoc/>
 	public byte GetBlock(Vector3Int pos)
 	{
-		var i = pos.X + pos.Z * _dimensions.X + pos.Y * _dimensions.X * _dimensions.Y;
+		var i = pos.X + pos.Z * _dimensions.X + pos.Y * _dimensions.X * _dimensions.Z;
 		return _worldData[i];
 	}
 
 	/// <inheritdoc/>
 	public void SetBlock(Vector3Int pos, byte block)
 	{
-		var i = pos.X + pos.Z * _dimensions.X + pos.Y * _dimensions.X * _dimensions.Y;
+		var i = pos.X + pos.Z * _dimensions.X + pos.Y * _dimensions.X * _dimensions.Z;
 		_worldData[i] = block;
 	}
 
@@ -79,7 +79,7 @@ public class BaseWorld : IWorld
 		_logger.Info($"Gzipped world data weighs: {size}.");
 		do
 		{
-			var amount = Math.Min(1024, size);
+			var amount = Math.Min(1024, (size - cursor));
 
 			_logger.Info($"{(byte)Math.Round(((cursor + amount) / size) * 100d)}% of the world sent...");
 

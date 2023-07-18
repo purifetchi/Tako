@@ -47,7 +47,7 @@ public partial class Server : IServer
 	{
 		NetworkManager = new NetworkManager(System.Net.IPAddress.Any, 25565);
 		World = new WorldGenerator()
-			.WithDimensions(new Vector3Int(10, 20, 10))
+			.WithDimensions(new Vector3Int(50, 20, 50))
 			.WithType(WorldGenerator.Type.Flat)
 			.Build();
 		RegisterHandlers();
