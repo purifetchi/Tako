@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Net.Sockets;
+using Tako.Common.Allocation;
 using Tako.Common.Logging;
 using Tako.Common.Network.Serialization;
 using Tako.Definitions.Network;
@@ -22,6 +23,11 @@ public class NetworkManager : INetworkManager
 
 	/// <inheritdoc/>
 	public IPacketProcessor PacketProcessor { get; init; }
+
+	/// <summary>
+	/// The allocator for connection ids.
+	/// </summary>
+	private readonly IdAllocator<byte> _idAllocator;
 
 	/// <summary>
 	/// The TCP listener.
@@ -51,6 +57,8 @@ public class NetworkManager : INetworkManager
 	public NetworkManager(IPAddress addr, int port)
 	{
 		const int outgoingBufferSizeInBytes = 1024;
+
+		_idAllocator = new(byte.MaxValue);
 
 		_outgoingBuffer = new Memory<byte>(new byte[outgoingBufferSizeInBytes]);
 		PacketProcessor = new PacketProcessor();
@@ -89,7 +97,7 @@ public class NetworkManager : INetworkManager
 		var clientSocket = _listener.EndAcceptSocket(ar!);
 		_logger.Info($"Accepting incoming connection from {clientSocket.RemoteEndPoint}.");
 
-		_connections.Add(new SocketConnection(clientSocket, 0));
+		_connections.Add(new SocketConnection(clientSocket, _idAllocator.GetId()));
 
 		// Renew the socket accepting.
 		_listener.BeginAcceptSocket(OnIncomingConnection, null);
