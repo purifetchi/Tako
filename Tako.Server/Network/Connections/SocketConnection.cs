@@ -45,26 +45,16 @@ public class SocketConnection : IConnection
 	}
 
 	/// <inheritdoc/>
-	public void Process()
+	public bool HasData()
+	{
+		return _socket.Available > 0;
+	}
+
+	/// <inheritdoc/>
+	public NetworkReader GetReader()
 	{
 		var read = _socket.Receive(_receiveBuffer.Span);
-		if (read < 1)
-			return;
-
-		var slice = _receiveBuffer[..read].Span;
-		var reader = new NetworkReader(slice);
-		var type = reader.Read<byte>();
-		_logger.Info($"Got a packet of type {type} from {_socket.RemoteEndPoint}.");
-
-		switch (type)
-		{
-			case 0x00:
-				var id = new ClientIdentificationPacket();
-				id.Deserialize(reader);
-
-				_logger.Info($"User {id.Username} with protocol version {id.ProtocolVersion} wants to log in. [Key={id.VerificationKey}]");
-				break;
-		}
+		return new NetworkReader(_receiveBuffer[..read].Span);
 	}
 
 	/// <inheritdoc/>

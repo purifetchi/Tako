@@ -1,4 +1,6 @@
-﻿namespace Tako.Definitions.Network.Connections;
+﻿using Tako.Common.Network.Serialization;
+
+namespace Tako.Definitions.Network.Connections;
 
 /// <summary>
 /// An interface for a client connection.
@@ -11,9 +13,15 @@ public interface IConnection
 	byte ConnectionId { get; }
 
 	/// <summary>
-	/// Processes the data on this connection.
+	/// Checks whether the socket has any inbound data.
 	/// </summary>
-	void Process();
+	bool HasData();
+
+	/// <summary>
+	/// Gets the reader for the data.
+	/// </summary>
+	/// <returns>The network reader.</returns>
+	NetworkReader GetReader();
 
 	/// <summary>
 	/// Sends this connection some data.

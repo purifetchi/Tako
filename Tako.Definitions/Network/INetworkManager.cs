@@ -14,6 +14,11 @@ public interface INetworkManager
 	IReadOnlyList<IConnection> Connections { get; }
 
 	/// <summary>
+	/// The packet processor.
+	/// </summary>
+	IPacketProcessor PacketProcessor { get; }
+
+	/// <summary>
 	/// Sends a packet to all the people.
 	/// </summary>
 	/// <param name="packet">The packet.</param>

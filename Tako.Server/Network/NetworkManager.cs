@@ -7,6 +7,8 @@ using Tako.Definitions.Network.Connections;
 using Tako.Definitions.Network.Packets;
 using Tako.Server.Logging;
 using Tako.Server.Network.Connections;
+using Tako.Server.Network.Packets;
+using Tako.Server.Network.Packets.Client;
 
 namespace Tako.Server.Network;
 
@@ -17,6 +19,9 @@ public class NetworkManager : INetworkManager
 {
 	/// <inheritdoc/>
 	public IReadOnlyList<IConnection> Connections => _connections;
+
+	/// <inheritdoc/>
+	public IPacketProcessor PacketProcessor { get; init; }
 
 	/// <summary>
 	/// The TCP listener.
@@ -48,6 +53,8 @@ public class NetworkManager : INetworkManager
 		const int outgoingBufferSizeInBytes = 1024;
 
 		_outgoingBuffer = new Memory<byte>(new byte[outgoingBufferSizeInBytes]);
+		PacketProcessor = new PacketProcessor();
+		PacketProcessor.RegisterPacket<ClientIdentificationPacket>(OnClientIdentification, 0x00);
 
 		_connections = new List<IConnection>();
 		_listener = new TcpListener(addr, port);
@@ -69,7 +76,10 @@ public class NetworkManager : INetworkManager
 	public void Receive()
 	{
 		foreach (var connection in Connections)
-			connection.Process();
+		{
+			while (connection.HasData())
+				PacketProcessor.HandleIncomingPacket(connection.GetReader());
+		}
 	}
 
 	/// <summary>
@@ -84,5 +94,14 @@ public class NetworkManager : INetworkManager
 
 		// Renew the socket accepting.
 		_listener.BeginAcceptSocket(OnIncomingConnection, null);
+	}
+
+	/// <summary>
+	/// Handler for the client identification packet.
+	/// </summary>
+	/// <param name="packet">The packet.</param>
+	private void OnClientIdentification(ClientIdentificationPacket packet)
+	{
+		_logger.Info($"User {packet.Username} with protocol version {packet.ProtocolVersion} wants to log in. [Key={packet.VerificationKey}]");
 	}
 }
