@@ -1,19 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Tako.Definitions.Game.Players;
+using Tako.Definitions.Game.World;
+using Tako.Definitions.Network;
+using Tako.Definitions.Network.Connections;
 
 namespace Tako.Server.Network;
 
 /// <summary>
 /// The actual Tako server.
 /// </summary>
-public class Server
+public class Server : IServer
 {
+	/// <inheritdoc/>
+	public IWorld World { get; private set; } = null!;
+
+	/// <inheritdoc/>
+	public INetworkManager NetworkManager { get; private set; } = null!;
+
+	/// <summary>
+	/// Is the server active?
+	/// </summary>
+	private bool _active;
+
+	/// <summary>
+	/// Constructs a new server.
+	/// </summary>
 	public Server()
 	{
-
+		NetworkManager = new NetworkManager(System.Net.IPAddress.Any, 25565);
 	}
 
 	/// <summary>
@@ -21,6 +34,31 @@ public class Server
 	/// </summary>
 	public void Run()
 	{
-		Console.WriteLine("TODO");
+		_active = true;
+
+		while (_active)
+		{
+			NetworkManager.Receive();
+
+			Thread.Sleep(10);
+		}
+	}
+
+	/// <inheritdoc/>
+	public IPlayer AddPlayer(string name, IConnection connection)
+	{
+		throw new NotImplementedException();
+	}
+
+	/// <inheritdoc/>
+	public IPlayer AddNpc(string name)
+	{
+		throw new NotImplementedException();
+	}
+
+	/// <inheritdoc/>
+	public void Shutdown()
+	{
+		_active = false;
 	}
 }

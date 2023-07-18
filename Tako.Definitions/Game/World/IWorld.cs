@@ -8,4 +8,6 @@ public interface IWorld
     void GetBlock();
 
     void SetBlock();
+
+    void Simulate();
 }

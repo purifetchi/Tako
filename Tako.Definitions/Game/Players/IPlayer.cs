@@ -20,7 +20,7 @@ public interface IPlayer
 	/// <summary>
 	/// The connection this player has.
 	/// </summary>
-	IConnection Connection { get; }
+	IConnection? Connection { get; }
 
 	/// <summary>
 	/// Sets the op status.

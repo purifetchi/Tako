@@ -19,7 +19,7 @@ public interface IConnection
 	/// Sends this connection some data.
 	/// </summary>
 	/// <param name="data">The data.</param>
-	void Send(ReadOnlyMemory<byte> data);
+	void Send(ReadOnlySpan<byte> data);
 
 	/// <summary>
 	/// Disconnects this connection.
