@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Net.Sockets;
 using Tako.Common.Logging;
+using Tako.Common.Network.Serialization;
 using Tako.Definitions.Network;
 using Tako.Definitions.Network.Connections;
 using Tako.Definitions.Network.Packets;
@@ -33,12 +34,21 @@ public class NetworkManager : INetworkManager
 	private readonly ILogger<NetworkManager> _logger = LoggerFactory<NetworkManager>.Get();
 
 	/// <summary>
+	/// The outgoing buffer.
+	/// </summary>
+	private Memory<byte> _outgoingBuffer;
+
+	/// <summary>
 	/// Constructs a new network manager from the given address and port.
 	/// </summary>
 	/// <param name="addr">The address.</param>
 	/// <param name="port">The port.</param>
 	public NetworkManager(IPAddress addr, int port)
 	{
+		const int outgoingBufferSizeInBytes = 1024;
+
+		_outgoingBuffer = new Memory<byte>(new byte[outgoingBufferSizeInBytes]);
+
 		_connections = new List<IConnection>();
 		_listener = new TcpListener(addr, port);
 
@@ -47,9 +57,10 @@ public class NetworkManager : INetworkManager
 	}
 
 	/// <inheritdoc/>
-	public void SendToAll(IPacket packet)
+	public void SendToAll(IServerPacket packet)
 	{
-		packet.Serialize(new Common.Network.Serialization.NetworkWriter());
+		var writer = new NetworkWriter(_outgoingBuffer.Span);
+		packet.Serialize(writer);
 		foreach (var connection in Connections)
 			connection.Send(ReadOnlySpan<byte>.Empty);
 	}

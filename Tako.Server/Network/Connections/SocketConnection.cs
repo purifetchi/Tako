@@ -1,5 +1,9 @@
 ﻿using System.Net.Sockets;
+using Tako.Common.Logging;
+using Tako.Common.Network.Serialization;
 using Tako.Definitions.Network.Connections;
+using Tako.Server.Logging;
+using Tako.Server.Network.Packets.Client;
 
 namespace Tako.Server.Network.Connections;
 
@@ -19,7 +23,12 @@ public class SocketConnection : IConnection
 	/// <summary>
 	/// The receive buffer for this connection.
 	/// </summary>
-	private Memory<byte> _receiveBuffer;
+	private readonly Memory<byte> _receiveBuffer;
+
+	/// <summary>
+	/// The logger.
+	/// </summary>
+	private readonly ILogger<SocketConnection> _logger = LoggerFactory<SocketConnection>.Get();
 
 	/// <summary>
 	/// Constructs a new socket connection given a socket.
@@ -42,7 +51,20 @@ public class SocketConnection : IConnection
 		if (read < 1)
 			return;
 
-		var slice = _receiveBuffer[..read];
+		var slice = _receiveBuffer[..read].Span;
+		var reader = new NetworkReader(slice);
+		var type = reader.Read<byte>();
+		_logger.Info($"Got a packet of type {type} from {_socket.RemoteEndPoint}.");
+
+		switch (type)
+		{
+			case 0x00:
+				var id = new ClientIdentificationPacket();
+				id.Deserialize(reader);
+
+				_logger.Info($"User {id.Username} with protocol version {id.ProtocolVersion} wants to log in. [Key={id.VerificationKey}]");
+				break;
+		}
 	}
 
 	/// <inheritdoc/>

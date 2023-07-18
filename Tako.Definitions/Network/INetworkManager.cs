@@ -17,7 +17,7 @@ public interface INetworkManager
 	/// Sends a packet to all the people.
 	/// </summary>
 	/// <param name="packet">The packet.</param>
-	void SendToAll(IPacket packet);
+	void SendToAll(IServerPacket packet);
 
 	/// <summary>
 	/// Processes all the current and incoming connections.
