@@ -54,7 +54,6 @@ public class NetworkManager : INetworkManager
 
 		_outgoingBuffer = new Memory<byte>(new byte[outgoingBufferSizeInBytes]);
 		PacketProcessor = new PacketProcessor();
-		PacketProcessor.RegisterPacket<ClientIdentificationPacket>(OnClientIdentification, 0x00);
 
 		_connections = new List<IConnection>();
 		_listener = new TcpListener(addr, port);
@@ -70,6 +69,15 @@ public class NetworkManager : INetworkManager
 		packet.Serialize(writer);
 		foreach (var connection in Connections)
 			connection.Send(ReadOnlySpan<byte>.Empty);
+	}
+
+	/// <inheritdoc/>
+	public void SendTo(byte connectionId, IServerPacket packet)
+	{
+		var writer = new NetworkWriter(_outgoingBuffer.Span);
+		packet.Serialize(writer);
+		Connections.First(conn => conn.ConnectionId == connectionId)?
+			.Send(ReadOnlySpan<byte>.Empty);
 	}
 
 	/// <inheritdoc/>
@@ -94,14 +102,5 @@ public class NetworkManager : INetworkManager
 
 		// Renew the socket accepting.
 		_listener.BeginAcceptSocket(OnIncomingConnection, null);
-	}
-
-	/// <summary>
-	/// Handler for the client identification packet.
-	/// </summary>
-	/// <param name="packet">The packet.</param>
-	private void OnClientIdentification(ClientIdentificationPacket packet)
-	{
-		_logger.Info($"User {packet.Username} with protocol version {packet.ProtocolVersion} wants to log in. [Key={packet.VerificationKey}]");
 	}
 }

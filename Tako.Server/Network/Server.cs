@@ -10,7 +10,7 @@ namespace Tako.Server.Network;
 /// <summary>
 /// The actual Tako server.
 /// </summary>
-public class Server : IServer
+public partial class Server : IServer
 {
 	/// <inheritdoc/>
 	public IWorld World { get; private set; } = null!;
@@ -21,7 +21,7 @@ public class Server : IServer
 	/// <summary>
 	/// The logger.
 	/// </summary>
-	private ILogger<Server> _logger = LoggerFactory<Server>.Get();
+	private readonly ILogger<Server> _logger = LoggerFactory<Server>.Get();
 
 	/// <summary>
 	/// Is the server active?
@@ -34,6 +34,7 @@ public class Server : IServer
 	public Server()
 	{
 		NetworkManager = new NetworkManager(System.Net.IPAddress.Any, 25565);
+		RegisterHandlers();
 	}
 
 	/// <summary>
@@ -47,6 +48,7 @@ public class Server : IServer
 		while (_active)
 		{
 			NetworkManager.Receive();
+			World?.Simulate();
 
 			Thread.Sleep(10);
 		}

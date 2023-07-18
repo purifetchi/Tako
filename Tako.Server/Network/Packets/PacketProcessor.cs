@@ -47,7 +47,7 @@ public class PacketProcessor : IPacketProcessor
 	/// <summary>
 	/// The logger.
 	/// </summary>
-	private ILogger<PacketProcessor> _logger = LoggerFactory<PacketProcessor>.Get();
+	private readonly ILogger<PacketProcessor> _logger = LoggerFactory<PacketProcessor>.Get();
 
 	/// <inheritdoc/>
 	public void HandleIncomingPacket(NetworkReader reader)
