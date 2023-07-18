@@ -32,6 +32,7 @@ public partial class Server
 		World?.StreamTo(conn);
 		AddPlayer(packet.Username, conn)
 			.Spawn(new System.Numerics.Vector3(20, 12, 20));
+		SpawnMissingPlayersFor(conn);
 	}
 
 	/// <summary>

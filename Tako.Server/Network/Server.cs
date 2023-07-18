@@ -8,6 +8,7 @@ using Tako.Definitions.Network.Connections;
 using Tako.Server.Game.Players;
 using Tako.Server.Game.World;
 using Tako.Server.Logging;
+using Tako.Server.Network.Packets.Server;
 
 namespace Tako.Server.Network;
 
@@ -119,6 +120,30 @@ public partial class Server : IServer
 
 		_players[player.PlayerId] = player;
 		return player;
+	}
+
+	/// <summary>
+	/// Spawns all the missing players for a player.
+	/// </summary>
+	/// <param name="conn">The connection of the player.</param>
+	private void SpawnMissingPlayersFor(IConnection conn)
+	{
+		foreach (var player in _players.Values)
+		{
+			if (player.Connection == conn)
+				continue;
+
+			conn.Send(new SpawnPlayerPacket
+			{
+				PlayerId = player.PlayerId,
+				PlayerName = player.Name,
+				X = player.Position.X,
+				Y = player.Position.Y,
+				Z = player.Position.Z,
+				Pitch = 0,
+				Yaw = 0
+			});
+		}
 	}
 
 	/// <inheritdoc/>
