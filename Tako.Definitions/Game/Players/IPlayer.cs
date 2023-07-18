@@ -8,6 +8,11 @@ namespace Tako.Definitions.Game.Players;
 public interface IPlayer
 {
 	/// <summary>
+	/// The player id.
+	/// </summary>
+	sbyte PlayerId { get; }
+
+	/// <summary>
 	/// This player's name.
 	/// </summary>
 	string Name { get; }

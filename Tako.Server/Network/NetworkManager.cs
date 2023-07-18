@@ -86,7 +86,7 @@ public class NetworkManager : INetworkManager
 		foreach (var connection in Connections)
 		{
 			while (connection.HasData())
-				PacketProcessor.HandleIncomingPacket(connection.GetReader());
+				PacketProcessor.HandleIncomingPacket(connection.GetReader(), connection);
 		}
 	}
 

@@ -1,4 +1,5 @@
-﻿using Tako.Server.Network.Packets.Client;
+﻿using Tako.Definitions.Network.Connections;
+using Tako.Server.Network.Packets.Client;
 
 namespace Tako.Server.Network;
 public partial class Server
@@ -15,8 +16,9 @@ public partial class Server
 	/// Handles the client identification packet.
 	/// </summary>
 	/// <param name="packet">The packet.</param>
-	private void OnClientIdentificationPacket(ClientIdentificationPacket packet)
+	private void OnClientIdentificationPacket(IConnection conn, ClientIdentificationPacket packet)
 	{
 		_logger.Info($"User {packet.Username} with protocol version {packet.ProtocolVersion} wants to log in. [Key={packet.VerificationKey}]");
+		AddPlayer(packet.Username, conn);
 	}
 }

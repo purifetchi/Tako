@@ -57,7 +57,8 @@ public partial class Server : IServer
 	/// <inheritdoc/>
 	public IPlayer AddPlayer(string name, IConnection connection)
 	{
-		throw new NotImplementedException();
+		_logger.Debug($"Adding player {name} for connection {connection.ConnectionId}");
+		return null!;
 	}
 
 	/// <inheritdoc/>

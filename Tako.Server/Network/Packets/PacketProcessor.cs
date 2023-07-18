@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Tako.Common.Logging;
 using Tako.Common.Network.Serialization;
+using Tako.Definitions.Network.Connections;
 using Tako.Definitions.Network.Packets;
 using Tako.Server.Logging;
 
@@ -25,14 +26,14 @@ public class PacketProcessor : IPacketProcessor
 		/// <summary>
 		/// The handler for the packet.
 		/// </summary>
-		public Action<IClientPacket> Handler { get; init; }
+		public Action<IConnection, IClientPacket> Handler { get; init; }
 
 		/// <summary>
 		/// Creates a new packet handling data.
 		/// </summary>
 		/// <param name="factory">The factory method.</param>
 		/// <param name="handler">The handler method.</param>
-		public PacketHandlingData(Func<IClientPacket> factory, Action<IClientPacket> handler)
+		public PacketHandlingData(Func<IClientPacket> factory, Action<IConnection, IClientPacket> handler)
 		{
 			Factory = factory;
 			Handler = handler;
@@ -50,7 +51,7 @@ public class PacketProcessor : IPacketProcessor
 	private readonly ILogger<PacketProcessor> _logger = LoggerFactory<PacketProcessor>.Get();
 
 	/// <inheritdoc/>
-	public void HandleIncomingPacket(NetworkReader reader)
+	public void HandleIncomingPacket(NetworkReader reader, IConnection conn)
 	{
 		var id = reader.Read<byte>();
 
@@ -64,18 +65,18 @@ public class PacketProcessor : IPacketProcessor
 		packet.Deserialize(reader);
 
 		_logger.Debug($"Handling packet of id 0x{id:X2} and type {packet.GetType().Name}.");
-		handler.Handler(packet);
+		handler.Handler(conn, packet);
 	}
 
 	/// <inheritdoc/>
-	public void RegisterPacket<TPacket>([NotNull] Action<TPacket> handler, byte id) 
+	public void RegisterPacket<TPacket>([NotNull] Action<IConnection, TPacket> handler, byte id) 
 		where TPacket : IClientPacket, new()
 	{
 		// Create the handler.
 		// TODO(pref): Is there a better way of handling the packet than to create another layer of indirection?
 		var handlerData = new PacketHandlingData(
 			() => new TPacket(),
-			packet => handler((TPacket)packet));
+			(conn, packet) => handler(conn, (TPacket)packet));
 
 		_handlers.Add(id, handlerData);
 	}
