@@ -20,5 +20,7 @@ public partial class Server
 	{
 		_logger.Info($"User {packet.Username} with protocol version {packet.ProtocolVersion} wants to log in. [Key={packet.VerificationKey}]");
 		AddPlayer(packet.Username, conn);
+
+		World?.StreamTo(conn);
 	}
 }

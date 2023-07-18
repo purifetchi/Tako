@@ -1,8 +1,10 @@
 ﻿using Tako.Common.Logging;
+using Tako.Common.Numerics;
 using Tako.Definitions.Game.Players;
 using Tako.Definitions.Game.World;
 using Tako.Definitions.Network;
 using Tako.Definitions.Network.Connections;
+using Tako.Server.Game.World;
 using Tako.Server.Logging;
 
 namespace Tako.Server.Network;
@@ -34,6 +36,10 @@ public partial class Server : IServer
 	public Server()
 	{
 		NetworkManager = new NetworkManager(System.Net.IPAddress.Any, 25565);
+		World = new WorldGenerator()
+			.WithDimensions(new Vector3Int(10, 20, 10))
+			.WithType(WorldGenerator.Type.Flat)
+			.Build();
 		RegisterHandlers();
 	}
 
