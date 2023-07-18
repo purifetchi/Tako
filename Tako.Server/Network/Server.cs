@@ -1,7 +1,9 @@
 ﻿using Tako.Definitions.Game.Players;
 using Tako.Definitions.Game.World;
+using Tako.Definitions.Logging;
 using Tako.Definitions.Network;
 using Tako.Definitions.Network.Connections;
+using Tako.Server.Logging;
 
 namespace Tako.Server.Network;
 
@@ -15,6 +17,11 @@ public class Server : IServer
 
 	/// <inheritdoc/>
 	public INetworkManager NetworkManager { get; private set; } = null!;
+
+	/// <summary>
+	/// The logger.
+	/// </summary>
+	private ILogger<Server> _logger = LoggerFactory<Server>.Get();
 
 	/// <summary>
 	/// Is the server active?
@@ -34,6 +41,7 @@ public class Server : IServer
 	/// </summary>
 	public void Run()
 	{
+		_logger.Info($"Server started and listening.");
 		_active = true;
 
 		while (_active)
