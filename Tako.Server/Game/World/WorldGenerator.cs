@@ -32,7 +32,7 @@ public class WorldGenerator
 	/// <summary>
 	/// The logger.
 	/// </summary>
-	private ILogger<WorldGenerator> _logger = LoggerFactory<WorldGenerator>.Get();
+	private readonly ILogger<WorldGenerator> _logger = LoggerFactory<WorldGenerator>.Get();
 
 	/// <summary>
 	/// Sets the dimensions for this world.
@@ -76,6 +76,10 @@ public class WorldGenerator
 		return baseWorld;
 	}
 
+	/// <summary>
+	/// Builds a flat world.
+	/// </summary>
+	/// <param name="world">The world.</param>
 	private void BuildFlat(IWorld world)
 	{
 		for (var x = 0; x < _dimensions.X; x++)
@@ -84,7 +88,7 @@ public class WorldGenerator
 			{
 				for (var y = 0; y < _dimensions.Y / 2; y++)
 				{
-					world.SetBlock(new Vector3Int(x, y, z), 1);
+					world.SetBlock(new Vector3Int(x, y, z), (byte)Random.Shared.Next(1, 10));
 				}
 			}
 		}

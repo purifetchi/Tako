@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Buffers.Binary;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace Tako.Common.Network.Serialization;
@@ -44,6 +45,32 @@ public ref struct NetworkWriter
 			Unsafe.Write(bufferPtr + _position, data);
 
 		_position += sizeof(TUnmanaged);
+	}
+
+	/// <summary>
+	/// Writes a big endian short.
+	/// </summary>
+	/// <param name="value">The short.</param>
+	public void WriteShortBigEndian(short value)
+	{
+		Console.WriteLine($"[WriteShortBigEndian]: {value} => {BinaryPrimitives.ReverseEndianness(value)}");
+		Write(BinaryPrimitives.ReverseEndianness(value));
+	}
+
+	/// <summary>
+	/// Writes a chunk, padding it to 1024 bytes if less.
+	/// </summary>
+	/// <param name="data">The chunk data.</param>
+	public void WriteChunk(ReadOnlySpan<byte> data)
+	{
+		const int chunkSize = 1024;
+		const byte padding = 0x0;
+
+		var difference = chunkSize - data.Length;
+		WriteBytes(data);
+
+		for (var i = 0; i < difference; i++)
+			Write(padding);
 	}
 
 	/// <summary>

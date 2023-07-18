@@ -78,8 +78,8 @@ public class SocketConnection : IConnection
 	{
 		_logger.Debug($"Sending packet of type {packet.GetType().Name} to {_socket.RemoteEndPoint}");
 
-		var buffer = stackalloc byte[1024];
-		var span = new Span<byte>(buffer, 1024);
+		var buffer = stackalloc byte[2048];
+		var span = new Span<byte>(buffer, 2048);
 		var writer = new NetworkWriter(span);
 		packet.Serialize(ref writer);
 		Send(span[..writer.Written]);

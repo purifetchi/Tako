@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Buffers.Binary;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace Tako.Common.Network.Serialization;
@@ -59,6 +60,15 @@ public ref struct NetworkReader
 		_position += count;
 
 		return slice;
+	}
+
+	/// <summary>
+	/// Reads a big endian short.
+	/// </summary>
+	/// <returns>The short.</returns>
+	public short ReadShortBigEndian()
+	{
+		return BinaryPrimitives.ReverseEndianness(Read<short>());
 	}
 
 	/// <summary>
