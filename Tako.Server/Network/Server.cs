@@ -6,6 +6,7 @@ using Tako.Definitions.Network;
 using Tako.Definitions.Network.Connections;
 using Tako.Server.Game.World;
 using Tako.Server.Logging;
+using Tako.Server.Network.Packets.Server;
 
 namespace Tako.Server.Network;
 
@@ -77,6 +78,18 @@ public partial class Server : IServer
 	public IPlayer AddPlayer(string name, IConnection connection)
 	{
 		_logger.Debug($"Adding player {name} for connection {connection.ConnectionId}");
+
+		connection.Send(new SpawnPlayerPacket
+		{
+			PlayerId = -1,
+			PlayerName = name,
+			X = (FShort)0f,
+			Y = (FShort)13f,
+			Z = (FShort)0f,
+			Pitch = 0,
+			Yaw = 0
+		});
+
 		return null!;
 	}
 

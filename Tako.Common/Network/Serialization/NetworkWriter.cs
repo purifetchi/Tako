@@ -1,6 +1,7 @@
 ﻿using System.Buffers.Binary;
 using System.Runtime.CompilerServices;
 using System.Text;
+using Tako.Common.Numerics;
 
 namespace Tako.Common.Network.Serialization;
 
@@ -53,8 +54,16 @@ public ref struct NetworkWriter
 	/// <param name="value">The short.</param>
 	public void WriteShortBigEndian(short value)
 	{
-		Console.WriteLine($"[WriteShortBigEndian]: {value} => {BinaryPrimitives.ReverseEndianness(value)}");
 		Write(BinaryPrimitives.ReverseEndianness(value));
+	}
+
+	/// <summary>
+	/// Writes an fshort.
+	/// </summary>
+	/// <param name="value">The fshort value.</param>
+	public void WriteFShort(FShort value)
+	{
+		Write(BinaryPrimitives.ReverseEndianness(value.Value));
 	}
 
 	/// <summary>

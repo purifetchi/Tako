@@ -27,8 +27,8 @@ public partial class Server
 			ServerMOTD = MOTD,
 			Type = Definitions.Game.Players.PlayerType.Regular
 		});
-		AddPlayer(packet.Username, conn);
-
 		World?.StreamTo(conn);
+		
+		AddPlayer(packet.Username, conn);
 	}
 }
