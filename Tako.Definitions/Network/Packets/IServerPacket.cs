@@ -8,8 +8,13 @@ namespace Tako.Definitions.Network.Packets;
 public interface IServerPacket
 {
 	/// <summary>
+	/// The packet id.
+	/// </summary>
+	byte PacketId { get; }
+
+	/// <summary>
 	/// Serializes this server packet to a network writer.
 	/// </summary>
 	/// <param name="writer">The network writer.</param>
-	void Serialize(NetworkWriter writer);
+	void Serialize(ref NetworkWriter writer);
 }

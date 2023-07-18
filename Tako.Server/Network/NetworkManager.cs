@@ -66,20 +66,11 @@ public class NetworkManager : INetworkManager
 	public void SendToAll(IServerPacket packet)
 	{
 		var writer = new NetworkWriter(_outgoingBuffer.Span);
-		packet.Serialize(writer);
+		packet.Serialize(ref writer);
 		foreach (var connection in Connections)
-			connection.Send(ReadOnlySpan<byte>.Empty);
+			connection.Send(_outgoingBuffer.Span[..writer.Written]);
 	}
-
-	/// <inheritdoc/>
-	public void SendTo(byte connectionId, IServerPacket packet)
-	{
-		var writer = new NetworkWriter(_outgoingBuffer.Span);
-		packet.Serialize(writer);
-		Connections.First(conn => conn.ConnectionId == connectionId)?
-			.Send(ReadOnlySpan<byte>.Empty);
-	}
-
+	
 	/// <inheritdoc/>
 	public void Receive()
 	{

@@ -11,5 +11,5 @@ public interface IClientPacket
 	/// Deserializes this packet.
 	/// </summary>
 	/// <param name="reader">The network reader.</param>
-	void Deserialize(NetworkReader reader);
+	void Deserialize(ref NetworkReader reader);
 }

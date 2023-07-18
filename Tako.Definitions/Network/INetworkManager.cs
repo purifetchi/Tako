@@ -25,13 +25,6 @@ public interface INetworkManager
 	void SendToAll(IServerPacket packet);
 
 	/// <summary>
-	/// Sends a packet to a specific connection id.
-	/// </summary>
-	/// <param name="connectionId">The connection id.</param>
-	/// <param name="packet">The packet.</param>
-	void SendTo(byte connectionId, IServerPacket packet);
-
-	/// <summary>
 	/// Processes all the current and incoming connections.
 	/// </summary>
 	void Receive();

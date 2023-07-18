@@ -62,7 +62,7 @@ public class PacketProcessor : IPacketProcessor
 		}
 
 		var packet = handler.Factory();
-		packet.Deserialize(reader);
+		packet.Deserialize(ref reader);
 
 		_logger.Debug($"Handling packet of id 0x{id:X2} and type {packet.GetType().Name}.");
 		handler.Handler(conn, packet);

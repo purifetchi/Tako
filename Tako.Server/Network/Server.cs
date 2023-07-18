@@ -21,6 +21,16 @@ public partial class Server : IServer
 	public INetworkManager NetworkManager { get; private set; } = null!;
 
 	/// <summary>
+	/// The server name.
+	/// </summary>
+	public string ServerName { get; set; }
+
+	/// <summary>
+	/// The motd.
+	/// </summary>
+	public string MOTD { get; set; }
+
+	/// <summary>
 	/// The logger.
 	/// </summary>
 	private readonly ILogger<Server> _logger = LoggerFactory<Server>.Get();
@@ -41,6 +51,9 @@ public partial class Server : IServer
 			.WithType(WorldGenerator.Type.Flat)
 			.Build();
 		RegisterHandlers();
+
+		ServerName = "Test server";
+		MOTD = "Very cool :)";
 	}
 
 	/// <summary>

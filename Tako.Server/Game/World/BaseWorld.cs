@@ -3,6 +3,7 @@ using Tako.Common.Numerics;
 using Tako.Definitions.Game.World;
 using Tako.Definitions.Network.Connections;
 using Tako.Server.Logging;
+using Tako.Server.Network.Packets.Server;
 
 namespace Tako.Server.Game.World;
 
@@ -52,5 +53,6 @@ public class BaseWorld : IWorld
 	public void StreamTo(IConnection conn)
 	{
 		_logger.Info($"We should now stream the world to {conn.ConnectionId}");
+		conn.Send(new LevelInitializePacket());
 	}
 }

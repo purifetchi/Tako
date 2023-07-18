@@ -2,8 +2,8 @@
 using Tako.Common.Logging;
 using Tako.Common.Network.Serialization;
 using Tako.Definitions.Network.Connections;
+using Tako.Definitions.Network.Packets;
 using Tako.Server.Logging;
-using Tako.Server.Network.Packets.Client;
 
 namespace Tako.Server.Network.Connections;
 
@@ -66,6 +66,22 @@ public class SocketConnection : IConnection
 	/// <inheritdoc/>
 	public void Send(ReadOnlySpan<byte> data)
 	{
+		Console.Write($"sending {data.Length} bytes: ");
+		foreach (var c in data)
+			Console.Write(c.ToString("X2"));
+		Console.Write('\n');
 		_socket.Send(data);
+	}
+
+	/// <inheritdoc/>
+	public unsafe void Send(IServerPacket packet)
+	{
+		_logger.Debug($"Sending packet of type {packet.GetType().Name} to {_socket.RemoteEndPoint}");
+
+		var buffer = stackalloc byte[1024];
+		var span = new Span<byte>(buffer, 1024);
+		var writer = new NetworkWriter(span);
+		packet.Serialize(ref writer);
+		Send(span[..writer.Written]);
 	}
 }

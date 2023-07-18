@@ -27,7 +27,7 @@ public struct ClientIdentificationPacket : IClientPacket
 	public string VerificationKey { get; private set; }
 
 	/// <inheritdoc/>
-	public void Deserialize(NetworkReader reader)
+	public void Deserialize(ref NetworkReader reader)
 	{
 		ProtocolVersion = reader.Read<byte>();
 		Username = reader.ReadString();

@@ -1,4 +1,5 @@
 ﻿using Tako.Common.Network.Serialization;
+using Tako.Definitions.Network.Packets;
 
 namespace Tako.Definitions.Network.Connections;
 
@@ -28,6 +29,12 @@ public interface IConnection
 	/// </summary>
 	/// <param name="data">The data.</param>
 	void Send(ReadOnlySpan<byte> data);
+
+	/// <summary>
+	/// Sends this connection a packet.
+	/// </summary>
+	/// <param name="packet">The packet.</param>
+	void Send(IServerPacket packet);
 
 	/// <summary>
 	/// Disconnects this connection.
