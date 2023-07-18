@@ -11,6 +11,7 @@ public partial class Server
 	private void RegisterHandlers()
 	{
 		NetworkManager.PacketProcessor.RegisterPacket<ClientIdentificationPacket>(OnClientIdentificationPacket, 0x00);
+		NetworkManager.PacketProcessor.RegisterPacket<PositionAndOrientationPacket>(OnPositionAndOrientationPacket, 0x08);
 	}
 
 	/// <summary>
@@ -27,8 +28,21 @@ public partial class Server
 			ServerMOTD = MOTD,
 			Type = Definitions.Game.Players.PlayerType.Regular
 		});
+
 		World?.StreamTo(conn);
-		
-		AddPlayer(packet.Username, conn);
+		AddPlayer(packet.Username, conn)
+			.Spawn(new System.Numerics.Vector3(20, 12, 20));
+	}
+
+	/// <summary>
+	/// Handles the position and orientation packet.
+	/// </summary>
+	/// <param name="conn">The connection.</param>
+	/// <param name="packet">The packet.</param>
+	private void OnPositionAndOrientationPacket(IConnection conn, PositionAndOrientationPacket packet)
+	{
+		Players.Values
+			.FirstOrDefault(player => player.Connection == conn)?
+			.SetPosition(new System.Numerics.Vector3(packet.X, packet.Y, packet.Z));
 	}
 }

@@ -20,6 +20,11 @@ public interface IServer
 	INetworkManager NetworkManager { get; }
 
 	/// <summary>
+	/// The dictionary containing all players.
+	/// </summary>
+	IReadOnlyDictionary<sbyte, IPlayer> Players { get; }
+
+	/// <summary>
 	/// Adds a player for the given connection.
 	/// </summary>
 	/// <param name="name">The player's name.</param>

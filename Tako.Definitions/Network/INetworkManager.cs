@@ -25,6 +25,13 @@ public interface INetworkManager
 	void SendToAll(IServerPacket packet);
 
 	/// <summary>
+	/// Sends a packet to all clients that match.
+	/// </summary>
+	/// <param name="packet">The packet.</param>
+	/// <param name="match">The query.</param>
+	void SendToAllThatMatch(IServerPacket packet, Func<IConnection, bool> match);
+
+	/// <summary>
 	/// Processes all the current and incoming connections.
 	/// </summary>
 	void Receive();

@@ -1,12 +1,13 @@
-﻿using Tako.Common.Logging;
+﻿using Tako.Common.Allocation;
+using Tako.Common.Logging;
 using Tako.Common.Numerics;
 using Tako.Definitions.Game.Players;
 using Tako.Definitions.Game.World;
 using Tako.Definitions.Network;
 using Tako.Definitions.Network.Connections;
+using Tako.Server.Game.Players;
 using Tako.Server.Game.World;
 using Tako.Server.Logging;
-using Tako.Server.Network.Packets.Server;
 
 namespace Tako.Server.Network;
 
@@ -20,6 +21,9 @@ public partial class Server : IServer
 
 	/// <inheritdoc/>
 	public INetworkManager NetworkManager { get; private set; } = null!;
+
+	/// <inheritdoc/>
+	public IReadOnlyDictionary<sbyte, IPlayer> Players => _players;
 
 	/// <summary>
 	/// The server name.
@@ -42,6 +46,16 @@ public partial class Server : IServer
 	private bool _active;
 
 	/// <summary>
+	/// The players dictionary.
+	/// </summary>
+	private readonly Dictionary<sbyte, IPlayer> _players;
+
+	/// <summary>
+	/// The player id allocator.
+	/// </summary>
+	private readonly IdAllocator<sbyte> _playerIdAllocator;
+
+	/// <summary>
 	/// Constructs a new server.
 	/// </summary>
 	public Server()
@@ -52,6 +66,9 @@ public partial class Server : IServer
 			.WithType(WorldGenerator.Type.Flat)
 			.Build();
 		RegisterHandlers();
+
+		_players = new();
+		_playerIdAllocator = new(sbyte.MaxValue);
 
 		ServerName = "Test server";
 		MOTD = "Very cool :)";
@@ -78,25 +95,30 @@ public partial class Server : IServer
 	public IPlayer AddPlayer(string name, IConnection connection)
 	{
 		_logger.Debug($"Adding player {name} for connection {connection.ConnectionId}");
+		var player = new Player(
+			_playerIdAllocator.GetId(),
+			name,
+			false,
+			connection,
+			this);
 
-		connection.Send(new SpawnPlayerPacket
-		{
-			PlayerId = -1,
-			PlayerName = name,
-			X = (FShort)0f,
-			Y = (FShort)13f,
-			Z = (FShort)0f,
-			Pitch = 0,
-			Yaw = 0
-		});
-
-		return null!;
+		_players[player.PlayerId] = player;
+		return player;
 	}
 
 	/// <inheritdoc/>
 	public IPlayer AddNpc(string name)
 	{
-		throw new NotImplementedException();
+		_logger.Debug($"Adding NPC {name}.");
+		var player = new Player(
+			_playerIdAllocator.GetId(),
+			name,
+			false,
+			null,
+			this);
+
+		_players[player.PlayerId] = player;
+		return player;
 	}
 
 	/// <inheritdoc/>

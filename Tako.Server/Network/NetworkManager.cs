@@ -9,7 +9,6 @@ using Tako.Definitions.Network.Packets;
 using Tako.Server.Logging;
 using Tako.Server.Network.Connections;
 using Tako.Server.Network.Packets;
-using Tako.Server.Network.Packets.Client;
 
 namespace Tako.Server.Network;
 
@@ -78,7 +77,20 @@ public class NetworkManager : INetworkManager
 		foreach (var connection in Connections)
 			connection.Send(_outgoingBuffer.Span[..writer.Written]);
 	}
-	
+
+	/// <inheritdoc/>
+	public void SendToAllThatMatch(IServerPacket packet, Func<IConnection, bool> query)
+	{
+		var writer = new NetworkWriter(_outgoingBuffer.Span);
+		packet.Serialize(ref writer);
+
+		foreach (var connection in Connections)
+		{
+			if (query(connection))
+				connection.Send(_outgoingBuffer.Span[..writer.Written]);
+		}
+	}
+
 	/// <inheritdoc/>
 	public void Receive()
 	{
