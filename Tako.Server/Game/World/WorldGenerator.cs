@@ -1,4 +1,5 @@
 ﻿using System.Numerics;
+using Tako.Common.Game.World;
 using Tako.Common.Logging;
 using Tako.Common.Numerics;
 using Tako.Definitions.Game.World;
@@ -90,9 +91,9 @@ public class WorldGenerator
 				{
 					var pos = new Vector3Int(x, y, z);
 					if (y < 10)
-						world.SetBlock(pos, 3);
+						world.SetBlock(pos, (byte)ClassicBlockType.Dirt);
 					else
-						world.SetBlock(pos, (byte)Random.Shared.Next(1, 10));
+						world.SetBlock(pos, (byte)Random.Shared.Next((byte)ClassicBlockType.Rock, (byte)ClassicBlockType.Lava));
 				}
 			}
 		}
