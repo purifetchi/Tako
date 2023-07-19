@@ -83,9 +83,9 @@ public ref struct NetworkWriter
 	}
 
 	/// <summary>
-	/// Writes a string into the buffer. Allocates, so be wary.
+	/// Writes a string into the buffer.
 	/// </summary>
-	/// <param name="str"></param>
+	/// <param name="str">The string to write.</param>
 	public unsafe void WriteString(string str)
 	{
 		const int maxStringLength = 64;
