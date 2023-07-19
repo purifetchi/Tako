@@ -64,6 +64,11 @@ public class Player : IPlayer
 	public void SetOpStatus(bool op)
 	{
 		Op = op;
+
+		Connection?.Send(new UpdatePlayerTypePacket
+		{
+			Type = Op ? PlayerType.Op : PlayerType.Regular
+		});
 	}
 
 	/// <inheritdoc/>
