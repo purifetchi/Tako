@@ -82,6 +82,7 @@ public partial class Server : IServer
 			.WithType(WorldGenerator.Type.Flat)
 			.Build(this);
 		Chat = new Chat(this);
+		RegisterChatCommands();
 		RegisterHandlers();
 
 		_players = new();
