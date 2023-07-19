@@ -26,6 +26,11 @@ public ref struct NetworkReader
 	public int Position => _position;
 
 	/// <summary>
+	/// Do we still have data leftover?
+	/// </summary>
+	public bool HasDataLeft => Position != _buffer.Length;
+
+	/// <summary>
 	/// Constructs a new network reader with the given buffer.
 	/// </summary>
 	/// <param name="buffer">The buffer.</param>

@@ -57,6 +57,8 @@ public class BaseWorld : IWorld
 		var i = pos.X + pos.Z * _dimensions.X + pos.Y * _dimensions.X * _dimensions.Z;
 		_worldData[i] = block;
 
+		_logger.Info($"Setting block at {pos} to {(ClassicBlockType)block}");
+
 		Server.NetworkManager.SendToAll(new SetBlockPacket
 		{
 			X = (short)pos.X,

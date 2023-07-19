@@ -24,7 +24,7 @@ public partial class Server
 	/// <param name="packet">The packet.</param>
 	private void OnClientIdentificationPacket(IConnection conn, ClientIdentificationPacket packet)
 	{
-		_logger.Info($"User {packet.Username} with protocol version {packet.ProtocolVersion} wants to log in. [Key={packet.VerificationKey}]");
+		_logger.Info($"User {packet.Username} with protocol version {packet.ProtocolVersion} wants to log in. [Key={packet.VerificationKey}, Capabilities={packet.Capabilities}]");
 		conn.Send(new ServerIdentificationPacket
 		{
 			ProtocolVersion = packet.ProtocolVersion,

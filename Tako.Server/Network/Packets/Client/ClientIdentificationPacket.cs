@@ -1,4 +1,5 @@
 ﻿using Tako.Common.Network.Serialization;
+using Tako.Definitions.Network.Capabilities;
 using Tako.Definitions.Network.Packets;
 
 namespace Tako.Server.Network.Packets.Client;
@@ -26,11 +27,17 @@ public struct ClientIdentificationPacket : IClientPacket
 	/// </summary>
 	public string VerificationKey { get; private set; }
 
+	/// <summary>
+	/// Usually reserved for padding but clients compliant with CPE use it to advertise it.
+	/// </summary>
+	public ClientIdentificationCapability Capabilities { get; private set; }
+
 	/// <inheritdoc/>
 	public void Deserialize(ref NetworkReader reader)
 	{
 		ProtocolVersion = reader.Read<byte>();
 		Username = reader.ReadString();
 		VerificationKey = reader.ReadString();
+		Capabilities = reader.Read<ClientIdentificationCapability>();
 	}
 }

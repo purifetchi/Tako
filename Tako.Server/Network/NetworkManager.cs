@@ -97,7 +97,11 @@ public class NetworkManager : INetworkManager
 		foreach (var connection in Connections)
 		{
 			while (connection.HasData())
-				PacketProcessor.HandleIncomingPacket(connection.GetReader(), connection);
+			{
+				var reader = connection.GetReader();
+				while (reader.HasDataLeft)
+					PacketProcessor.HandleIncomingPacket(ref reader, connection);
+			}
 		}
 	}
 

@@ -37,7 +37,8 @@ public class SocketConnection : IConnection
 	/// <param name="connectionId">The connection id to assign to this connection.</param>
 	public SocketConnection(Socket socket, byte connectionId)
 	{
-		const int bufferSizeInBytes = 1024;
+		const int KiB = 1024;
+		const int bufferSizeInBytes = 128 * KiB;
 
 		ConnectionId = connectionId;
 		_socket = socket;

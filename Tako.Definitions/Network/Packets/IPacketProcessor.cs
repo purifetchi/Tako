@@ -21,5 +21,5 @@ public interface IPacketProcessor
 	/// </summary>
 	/// <param name="reader">The reader to read from.</param>
 	/// <param name="conn">The connection it belongs to.</param>
-	void HandleIncomingPacket(NetworkReader reader, IConnection conn);
+	void HandleIncomingPacket(ref NetworkReader reader, IConnection conn);
 }

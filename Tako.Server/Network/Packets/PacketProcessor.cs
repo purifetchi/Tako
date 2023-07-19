@@ -51,7 +51,7 @@ public class PacketProcessor : IPacketProcessor
 	private readonly ILogger<PacketProcessor> _logger = LoggerFactory<PacketProcessor>.Get();
 
 	/// <inheritdoc/>
-	public void HandleIncomingPacket(NetworkReader reader, IConnection conn)
+	public void HandleIncomingPacket(ref NetworkReader reader, IConnection conn)
 	{
 		var id = reader.Read<byte>();
 
@@ -64,7 +64,7 @@ public class PacketProcessor : IPacketProcessor
 		var packet = handler.Factory();
 		packet.Deserialize(ref reader);
 
-		_logger.Debug($"Handling packet of id 0x{id:X2} and type {packet.GetType().Name}.");
+		//_logger.Debug($"Handling packet of id 0x{id:X2} and type {packet.GetType().Name}.");
 		handler.Handler(conn, packet);
 	}
 
