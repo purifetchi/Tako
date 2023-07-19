@@ -1,4 +1,5 @@
-﻿using Tako.Definitions.Game.Chat;
+﻿using Tako.Definitions.Game;
+using Tako.Definitions.Game.Chat;
 using Tako.Definitions.Game.Players;
 using Tako.Definitions.Game.World;
 using Tako.Definitions.Network.Connections;
@@ -11,9 +12,9 @@ namespace Tako.Definitions.Network;
 public interface IServer
 {
 	/// <summary>
-	/// The current world of the server.
+	/// The realms inside of this server.
 	/// </summary>
-	IWorld World { get; }
+	IReadOnlyList<IRealm> Realms { get; }
 
 	/// <summary>
 	/// The network manager for this server.
@@ -21,29 +22,26 @@ public interface IServer
 	INetworkManager NetworkManager { get; }
 
 	/// <summary>
-	/// The dictionary containing all players.
-	/// </summary>
-	IReadOnlyDictionary<sbyte, IPlayer> Players { get; }
-
-	/// <summary>
 	/// The chat instance for this server.
 	/// </summary>
 	IChat Chat { get; }
 
 	/// <summary>
+	/// Creates a new realm.
+	/// </summary>
+	/// <param name="name">The name of the realm.</param>
+	/// <param name="primary">Is it a primary realm?</param>
+	/// <returns>The realm.</returns>
+	IRealm CreateRealm(string name, bool primary = false);
+
+	/// <summary>
 	/// Adds a player for the given connection.
 	/// </summary>
 	/// <param name="name">The player's name.</param>
+	/// <param name="realm">The realm.</param>
 	/// <param name="connection">The connection.</param>
 	/// <returns>The player.</returns>
-	IPlayer AddPlayer(string name, IConnection connection);
-
-	/// <summary>
-	/// Adds an NPC.
-	/// </summary>
-	/// <param name="name">The name of the npc.</param>
-	/// <returns>The npc.</returns>
-	IPlayer AddNpc(string name);
+	IPlayer AddPlayer(string name, IRealm realm, IConnection connection);
 
 	/// <summary>
 	/// Shuts down this server.

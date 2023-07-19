@@ -14,6 +14,11 @@ public interface IConnection
 	byte ConnectionId { get; }
 
 	/// <summary>
+	/// The player associated with this connection.
+	/// </summary>
+	sbyte PlayerId { get; set; }
+
+	/// <summary>
 	/// Whether the socket is connected.
 	/// </summary>
 	bool Connected { get; }

@@ -26,18 +26,11 @@ public partial class Server
 	private void OnClientIdentificationPacket(IConnection conn, ClientIdentificationPacket packet)
 	{
 		_logger.Info($"User {packet.Username} with protocol version {packet.ProtocolVersion} wants to log in. [Key={packet.VerificationKey}, Capabilities={packet.Capabilities}]");
-		conn.Send(new ServerIdentificationPacket
-		{
-			ProtocolVersion = packet.ProtocolVersion,
-			ServerName = ServerName,
-			ServerMOTD = MOTD,
-			Type = Definitions.Game.Players.PlayerType.Regular
-		});
+		var primaryRealm = Realms.First(realm => realm.IsPrimaryRealm);
 
-		World?.StreamTo(conn);
-		AddPlayer(packet.Username, conn)
-			.Spawn(new Vector3(20, 12, 20));
-		SpawnMissingPlayersFor(conn);
+		var player = AddPlayer(packet.Username, primaryRealm, conn);
+		conn.PlayerId = player.PlayerId;
+		primaryRealm.MovePlayer(player);
 	}
 
 	/// <summary>
@@ -47,7 +40,9 @@ public partial class Server
 	/// <param name="packet">The packet.</param>
 	private void OnPositionAndOrientationPacket(IConnection conn, PositionAndOrientationPacket packet)
 	{
-		Players.Values
+		// TODO(pref): Optimize!!!
+		Realms.First(realm => realm.Players.ContainsKey(conn.PlayerId))?
+			.Players.Values
 			.FirstOrDefault(player => player.Connection == conn)?
 			.SetPositionAndOrientation(
 				new Vector3(packet.X, packet.Y, packet.Z), 
@@ -61,16 +56,23 @@ public partial class Server
 	/// <param name="packet">The packet.</param>
 	private void OnSetBlockPacket(IConnection conn, Packets.Client.SetBlockPacket packet)
 	{
+		// Find the realm
+		// TODO(pref): Optimize!!!
+		var realm = Realms.FirstOrDefault(
+			realm => realm.Players.ContainsKey(conn.PlayerId));
+
 		var pos = new Vector3Int(packet.X, packet.Y, packet.Z);
+
+		_logger.Debug($"Changing block for realm '{realm?.Name}'");
 
 		switch (packet.Mode)
 		{
 			case BlockChangeMode.Destroyed:
-				World?.SetBlock(pos, (byte)ClassicBlockType.Air);
+				realm?.World?.SetBlock(pos, (byte)ClassicBlockType.Air);
 				break;
 
 			case BlockChangeMode.Created:
-				World?.SetBlock(pos, packet.BlockType);
+				realm?.World?.SetBlock(pos, packet.BlockType);
 				break;
 		}
 	}
@@ -82,8 +84,8 @@ public partial class Server
 	/// <param name="packet">The packet.</param>
 	private void OnMessagePacket(IConnection conn, Packets.Client.MessagePacket packet)
 	{
-		var player = Players.Values
-			.FirstOrDefault(player => player.Connection == conn);
+		var player = Realms.First(realm => realm.Players.ContainsKey(conn.PlayerId))?
+			.Players[conn.PlayerId];
 
 		if (player is null)
 		{

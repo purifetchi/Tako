@@ -1,5 +1,6 @@
 ﻿using System.Buffers;
 using Tako.Common.Logging;
+using Tako.Definitions.Game;
 using Tako.Definitions.Game.Chat;
 using Tako.Definitions.Game.Players;
 using Tako.Definitions.Network;
@@ -61,7 +62,7 @@ public class Chat : IChat
 		var filled = string.Format(MessageTemplate, source.Name, message);
 		_logger.Info(filled);
 
-		Server.NetworkManager.SendToAll(new MessagePacket
+		source.Realm.SendToAllWithinRealm(new MessagePacket
 		{
 			PlayerId = 0x00,
 			Message = filled
@@ -83,6 +84,16 @@ public class Chat : IChat
 	{
 		dest.Connection?.Send(new MessagePacket 
 		{ 
+			PlayerId = -1,
+			Message = message
+		});
+	}
+
+	/// <inheritdoc/>
+	public void SendServerMessageTo(IRealm realm, string message)
+	{
+		realm.SendToAllWithinRealm(new MessagePacket
+		{
 			PlayerId = -1,
 			Message = message
 		});

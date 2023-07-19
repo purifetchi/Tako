@@ -40,6 +40,13 @@ public interface IChat
 	void SendServerMessageTo(IPlayer dest, string message);
 
 	/// <summary>
+	/// Sends a server message to a realm.
+	/// </summary>
+	/// <param name="dest">The player.</param>
+	/// <param name="message">The message.</param>
+	void SendServerMessageTo(IRealm dest, string message);
+
+	/// <summary>
 	/// Registers a chat command.
 	/// </summary>
 	/// <param name="name">The name of the command.</param>

@@ -41,9 +41,9 @@ public interface IPlayer
 	IConnection? Connection { get; }
 
 	/// <summary>
-	/// The server this player is attached to.
+	/// The realm this player is attached to.
 	/// </summary>
-	IServer Server { get; }
+	IRealm Realm { get; }
 
 	/// <summary>
 	/// Sets the op status.
@@ -74,4 +74,10 @@ public interface IPlayer
 	/// Pings this player.
 	/// </summary>
 	void Ping();
+
+	/// <summary>
+	/// Sets the new realm.
+	/// </summary>
+	/// <param name="realm">The realm.</param>
+	void SetRealm(IRealm realm);
 }

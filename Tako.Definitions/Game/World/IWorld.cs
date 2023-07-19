@@ -1,5 +1,4 @@
 ﻿using Tako.Common.Numerics;
-using Tako.Definitions.Network;
 using Tako.Definitions.Network.Connections;
 
 namespace Tako.Definitions.Game.World;
@@ -9,10 +8,10 @@ namespace Tako.Definitions.Game.World;
 /// </summary>
 public interface IWorld
 {
-    /// <summary>
-    /// The server this world belongs to.
-    /// </summary>
-    IServer Server { get; }
+	/// <summary>
+	/// The server this world belongs to.
+	/// </summary>
+	IRealm Realm { get; }
 
     /// <summary>
     /// Gets the block given its xyz coords.

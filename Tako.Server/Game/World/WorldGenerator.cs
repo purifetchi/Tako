@@ -1,5 +1,6 @@
 ﻿using Tako.Common.Logging;
 using Tako.Common.Numerics;
+using Tako.Definitions.Game;
 using Tako.Definitions.Game.World;
 using Tako.Definitions.Network;
 using Tako.Server.Logging;
@@ -9,15 +10,12 @@ namespace Tako.Server.Game.World;
 /// <summary>
 /// A world generator.
 /// </summary>
-public class WorldGenerator
+public class WorldGenerator : IWorldGenerator
 {
 	/// <summary>
-	/// The type of the world.
+	/// The realm we're building for.
 	/// </summary>
-	public enum Type
-	{
-		Flat
-	}
+	private readonly IRealm _worldRealm;
 
 	/// <summary>
 	/// The dimensions of the world.
@@ -27,7 +25,7 @@ public class WorldGenerator
 	/// <summary>
 	/// The type of the world.
 	/// </summary>
-	private Type _type;
+	private WorldType _type;
 
 	/// <summary>
 	/// The logger.
@@ -35,45 +33,49 @@ public class WorldGenerator
 	private readonly ILogger<WorldGenerator> _logger = LoggerFactory<WorldGenerator>.Get();
 
 	/// <summary>
-	/// Sets the dimensions for this world.
+	/// Constructs a new world generator for a realm.
 	/// </summary>
-	/// <param name="dimensions">The dimensions.</param>
-	public WorldGenerator WithDimensions(Vector3Int dimensions)
+	/// <param name="realm">The realm.</param>
+	public WorldGenerator(IRealm realm)
+	{
+		_worldRealm = realm;
+	}
+
+	/// <inheritdoc/>
+	public IWorldGenerator WithDimensions(Vector3Int dimensions)
 	{
 		_dimensions = dimensions;	
 		return this;
 	}
 
-	/// <summary>
-	/// Sets the type for this world.
-	/// </summary>
-	/// <param name="type">The type.</param>
-	public WorldGenerator WithType(Type type)
+	/// <inheritdoc/>
+	public IWorldGenerator WithType(WorldType type)
 	{
 		_type = type;
 		return this;
 	}
 
-	/// <summary>
-	/// Builds the world.
-	/// </summary>
-	/// <returns>The built world.</returns>
-	public IWorld Build(IServer server)
+	/// <inheritdoc/>
+	public void Build()
 	{
 		_logger.Info($"Generating world of type {_type} and dimensions {_dimensions}.");
 
-		var baseWorld = new BaseWorld(_dimensions, server);
+		var baseWorld = new BaseWorld(_dimensions, _worldRealm);
 		switch (_type)
 		{
-			case Type.Flat:
+			case WorldType.Flat:
 				BuildFlat(baseWorld);
+				break;
+
+			case WorldType.Classic:
+				BuildClassic(baseWorld);
 				break;
 
 			default:
 				throw new NotImplementedException();
 		}
 
-		return baseWorld;
+		_worldRealm.SetWorld(baseWorld);
 	}
 
 	/// <summary>
@@ -92,9 +94,18 @@ public class WorldGenerator
 					if (y < 10)
 						world.SetBlock(pos, (byte)ClassicBlockType.Dirt);
 					else
-						world.SetBlock(pos, (byte)Random.Shared.Next((byte)ClassicBlockType.Rock, (byte)ClassicBlockType.Lava));
+						world.SetBlock(pos, (byte)ClassicBlockType.Grass);
 				}
 			}
 		}
+	}
+
+	/// <summary>
+	/// Builds a classic style world.
+	/// </summary>
+	/// <param name="world">The world.</param>
+	private void BuildClassic(IWorld world)
+	{
+
 	}
 }

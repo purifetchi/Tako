@@ -16,6 +16,9 @@ public class SocketConnection : IConnection
 	public byte ConnectionId { get; private set; }
 
 	/// <inheritdoc/>
+	public sbyte PlayerId { get; set; }
+
+	/// <inheritdoc/>
 	public bool Connected => _socket.Connected;
 
 	/// <summary>

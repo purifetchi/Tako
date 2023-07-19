@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using Tako.Common.Numerics;
+using Tako.Definitions.Game;
 using Tako.Definitions.Game.Players;
 using Tako.Definitions.Network;
 using Tako.Definitions.Network.Connections;
@@ -37,7 +38,7 @@ public class Player : IPlayer
 	public IConnection? Connection { get; init; }
 
 	/// <inheritdoc/>
-	public IServer Server { get; init; }
+	public IRealm Realm { get; private set; }
 
 	/// <summary>
 	/// Constructs a new player.
@@ -51,13 +52,13 @@ public class Player : IPlayer
 		[NotNull] string name, 
 		bool op, 
 		IConnection? connection,
-		IServer server)
+		IRealm realm)
 	{
 		PlayerId = playerId;
 		Name = name;
 		Op = op;
 		Connection = connection;
-		Server = server;
+		Realm = realm;
 	}
 
 	/// <inheritdoc/>
@@ -77,7 +78,7 @@ public class Player : IPlayer
 		Position = position;
 		Orientation = orientation;
 
-		Server.NetworkManager.SendToAllThatMatch(new SetPositionAndOrientationPacket
+		Realm.SendToAllWithinRealmThatMatch(new SetPositionAndOrientationPacket
 		{
 			PlayerId = PlayerId,
 			X = position.X,
@@ -106,7 +107,7 @@ public class Player : IPlayer
 		});
 
 		// Then to everyone else.
-		Server.NetworkManager.SendToAllThatMatch(new SpawnPlayerPacket
+		Realm.SendToAllWithinRealmThatMatch(new SpawnPlayerPacket
 		{
 			PlayerId = PlayerId,
 			PlayerName = Name,
@@ -117,18 +118,18 @@ public class Player : IPlayer
 			Yaw = Orientation.Yaw
 		}, conn => conn != Connection);
 
-		Server.Chat.SendServerMessage($"{Name} has joined!");
+		Realm.Server.Chat.SendServerMessageTo(Realm, $"{Name} has joined!");
 	}
 
 	/// <inheritdoc/>
 	public void Disconnect(string? reason = null)
 	{
 		if (reason is null)
-			Server.Chat.SendServerMessage($"{Name} has left!");
+			Realm.Server.Chat.SendServerMessageTo(Realm, $"{Name} has left!");
 		else
-			Server.Chat.SendServerMessage($"{Name} has left because {reason}");
+			Realm.Server.Chat.SendServerMessageTo(Realm, $"{Name} has left because {reason}");
 
-		Server.NetworkManager.SendToAllThatMatch(new DespawnPlayerPacket
+		Realm.SendToAllWithinRealmThatMatch(new DespawnPlayerPacket
 		{
 			PlayerId = PlayerId
 		}, conn => conn != Connection);
@@ -144,5 +145,11 @@ public class Player : IPlayer
 	public void Ping()
 	{
 		Connection?.Send(new PingMessage());
+	}
+
+	/// <inheritdoc/>
+	public void SetRealm(IRealm realm)
+	{
+		Realm = realm;
 	}
 }

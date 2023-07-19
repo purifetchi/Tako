@@ -10,6 +10,7 @@ public partial class Server
 	private void RegisterChatCommands()
 	{
 		Chat.RegisterChatCommand("op", OnOpCommand);
+		Chat.RegisterChatCommand("move", OnMoveCommand);
 	}
 
 	/// <summary>
@@ -19,7 +20,10 @@ public partial class Server
 	/// <param name="args">The args.</param>
 	private void OnOpCommand(IPlayer player, string[] args)
 	{
-		var target = Players.Values.FirstOrDefault(player => player.Name == args[1]);
+		var target = player.Realm
+			.Players
+			.Values
+			.FirstOrDefault(player => player.Name == args[1]);
 
 		if (target is null)
 		{
@@ -28,5 +32,22 @@ public partial class Server
 		}
 
 		target.SetOpStatus(!target.Op);
+	}
+
+	/// <summary>
+	/// Handles the /move command.
+	/// </summary>
+	/// <param name="player">The player.</param>
+	/// <param name="args">The args.</param>
+	private void OnMoveCommand(IPlayer player, string[] args)
+	{
+		var realm = Realms.FirstOrDefault(realm => realm.Name == args[1]);
+		if (realm is null)
+		{
+			Chat.SendServerMessageTo(player, "&cThis realm does not exist.");
+			return;
+		}
+
+		realm.MovePlayer(player);
 	}
 }
