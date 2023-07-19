@@ -114,4 +114,30 @@ public class Player : IPlayer
 
 		Server.Chat.SendServerMessage($"{Name} has joined!");
 	}
+
+	/// <inheritdoc/>
+	public void Disconnect(string? reason = null)
+	{
+		if (reason is null)
+			Server.Chat.SendServerMessage($"{Name} has left!");
+		else
+			Server.Chat.SendServerMessage($"{Name} has left because {reason}");
+
+		Server.NetworkManager.SendToAllThatMatch(new DespawnPlayerPacket
+		{
+			PlayerId = PlayerId
+		}, conn => conn != Connection);
+
+		Connection?.Send(new DisconnectPlayerPacket
+		{
+			DisconnectReason = reason ?? ""
+		});
+		Connection?.Disconnect();
+	}
+
+	/// <inheritdoc/>
+	public void Ping()
+	{
+		Connection?.Send(new PingMessage());
+	}
 }

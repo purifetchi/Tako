@@ -63,4 +63,15 @@ public interface IPlayer
 	/// </summary>
 	/// <param name="position">The position.</param>
 	void Spawn(Vector3 position);
+
+	/// <summary>
+	/// Disconnects a player.
+	/// </summary>
+	/// <param name="reason">The reason.</param>
+	void Disconnect(string? reason = null);
+
+	/// <summary>
+	/// Pings this player.
+	/// </summary>
+	void Ping();
 }

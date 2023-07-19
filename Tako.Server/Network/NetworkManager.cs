@@ -49,6 +49,11 @@ public class NetworkManager : INetworkManager
 	private Memory<byte> _outgoingBuffer;
 
 	/// <summary>
+	/// The queue for connections that should be removed.
+	/// </summary>
+	private Queue<IConnection> _removeQueue;
+
+	/// <summary>
 	/// Constructs a new network manager from the given address and port.
 	/// </summary>
 	/// <param name="addr">The address.</param>
@@ -64,9 +69,11 @@ public class NetworkManager : INetworkManager
 
 		_connections = new List<IConnection>();
 		_listener = new TcpListener(addr, port);
-
+		
 		_listener.Start();
 		_listener.BeginAcceptSocket(OnIncomingConnection, null);
+		
+		_removeQueue = new Queue<IConnection>();
 	}
 
 	/// <inheritdoc/>
@@ -96,12 +103,28 @@ public class NetworkManager : INetworkManager
 	{
 		foreach (var connection in Connections)
 		{
+			if (!connection.Connected)
+			{
+				_removeQueue.Enqueue(connection);
+				break;
+			}
+
 			while (connection.HasData())
 			{
 				var reader = connection.GetReader();
 				while (reader.HasDataLeft)
 					PacketProcessor.HandleIncomingPacket(ref reader, connection);
 			}
+		}
+
+		// Remove all the gone connections.
+		while (_removeQueue.Count > 0)
+		{
+			var conn = _removeQueue.Dequeue();
+			conn!.Disconnect();
+			_connections.Remove(conn!);
+
+			_idAllocator.ReleaseId(conn!.ConnectionId);
 		}
 	}
 

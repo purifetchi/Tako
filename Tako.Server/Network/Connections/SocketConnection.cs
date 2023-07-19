@@ -15,6 +15,9 @@ public class SocketConnection : IConnection
 	/// <inheritdoc/>
 	public byte ConnectionId { get; private set; }
 
+	/// <inheritdoc/>
+	public bool Connected => _socket.Connected;
+
 	/// <summary>
 	/// The socket for this connection.
 	/// </summary>
@@ -61,13 +64,24 @@ public class SocketConnection : IConnection
 	/// <inheritdoc/>
 	public void Disconnect()
 	{
+		if (!Connected)
+			return;
+
 		_socket.Close();
 	}
 
 	/// <inheritdoc/>
 	public void Send(ReadOnlySpan<byte> data)
 	{
-		_socket.Send(data);
+		try
+		{
+			_socket.Send(data);
+		}
+		catch (SocketException)
+		{
+			// NOTE(pref): We do not care about the socket exceptions here.
+			//			   Wish I could just disable those...
+		}
 	}
 
 	/// <inheritdoc/>

@@ -14,6 +14,11 @@ public interface IConnection
 	byte ConnectionId { get; }
 
 	/// <summary>
+	/// Whether the socket is connected.
+	/// </summary>
+	bool Connected { get; }
+
+	/// <summary>
 	/// Checks whether the socket has any inbound data.
 	/// </summary>
 	bool HasData();

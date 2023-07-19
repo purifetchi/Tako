@@ -62,6 +62,16 @@ public partial class Server : IServer
 	private readonly IdAllocator<sbyte> _playerIdAllocator;
 
 	/// <summary>
+	/// The disconnect queue.
+	/// </summary>
+	private readonly Queue<IPlayer> _disconnectQueue;
+
+	/// <summary>
+	/// Last time we've pinged all players.
+	/// </summary>
+	private long _lastPingTime;
+
+	/// <summary>
 	/// Constructs a new server.
 	/// </summary>
 	public Server()
@@ -76,6 +86,8 @@ public partial class Server : IServer
 
 		_players = new();
 		_playerIdAllocator = new(sbyte.MaxValue);
+
+		_disconnectQueue = new Queue<IPlayer>();
 
 		ServerName = "Test server";
 		MOTD = "Very cool :)";
@@ -94,6 +106,7 @@ public partial class Server : IServer
 			NetworkManager.Receive();
 			World?.Simulate();
 
+			RemoveInactivePlayers();
 			Thread.Sleep(10);
 		}
 	}
@@ -150,6 +163,37 @@ public partial class Server : IServer
 				Yaw = 0
 			});
 		}
+	}
+
+	/// <summary>
+	/// Checks if players are still active.
+	/// </summary>
+	private void RemoveInactivePlayers()
+	{
+		const int pingInterval = 5;
+
+		var time = DateTimeOffset.Now.ToUnixTimeSeconds();
+		var shouldPing = time - _lastPingTime > pingInterval;
+		if (shouldPing)
+			_lastPingTime = time;
+
+		foreach (var player in Players.Values)
+		{
+			if (player.Connection is null)
+				continue;
+
+			if (shouldPing)
+				player.Ping();
+
+			if (!player.Connection.Connected)
+			{
+				_disconnectQueue.Enqueue(player);
+				player.Disconnect();
+			}
+		}
+
+		while (_disconnectQueue.Count > 0)
+			_players.Remove(_disconnectQueue.Dequeue().PlayerId);
 	}
 
 	/// <inheritdoc/>

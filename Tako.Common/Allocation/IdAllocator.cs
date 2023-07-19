@@ -17,17 +17,17 @@ public class IdAllocator<TNumericType>
 	/// <summary>
 	/// The used ids set.
 	/// </summary>
-	private HashSet<TNumericType> _usedIds;
+	private readonly HashSet<TNumericType> _usedIds;
 
 	/// <summary>
 	/// The free ids stack.
 	/// </summary>
-	private Stack<TNumericType> _freeIds;
+	private readonly Stack<TNumericType> _freeIds;
 
 	/// <summary>
 	/// The max id we can assign.
 	/// </summary>
-	private TNumericType _maxId;
+	private readonly TNumericType _maxId;
 
 	/// <summary>
 	/// Creates a new id allocation.
