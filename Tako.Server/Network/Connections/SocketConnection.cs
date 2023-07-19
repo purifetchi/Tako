@@ -66,10 +66,6 @@ public class SocketConnection : IConnection
 	/// <inheritdoc/>
 	public void Send(ReadOnlySpan<byte> data)
 	{
-		Console.Write($"sending {data.Length} bytes: ");
-		foreach (var c in data)
-			Console.Write(c.ToString("X2"));
-		Console.Write('\n');
 		_socket.Send(data);
 	}
 
