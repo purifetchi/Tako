@@ -1,5 +1,6 @@
 ﻿using System.Numerics;
 using Tako.Common.Numerics;
+using Tako.Definitions.Game.World;
 using Tako.Definitions.Network.Connections;
 using Tako.Server.Network.Packets.Client;
 using Tako.Server.Network.Packets.Server;
@@ -13,6 +14,7 @@ public partial class Server
 	private void RegisterHandlers()
 	{
 		NetworkManager.PacketProcessor.RegisterPacket<ClientIdentificationPacket>(OnClientIdentificationPacket, 0x00);
+		NetworkManager.PacketProcessor.RegisterPacket<Packets.Client.SetBlockPacket>(OnSetBlockPacket, 0x05);
 		NetworkManager.PacketProcessor.RegisterPacket<PositionAndOrientationPacket>(OnPositionAndOrientationPacket, 0x08);
 	}
 
@@ -49,5 +51,26 @@ public partial class Server
 			.SetPositionAndOrientation(
 				new Vector3(packet.X, packet.Y, packet.Z), 
 				new Orientation(packet.Yaw, packet.Pitch));
+	}
+
+	/// <summary>
+	/// Handles the set block packet.
+	/// </summary>
+	/// <param name="conn">The connection.</param>
+	/// <param name="packet">The packet.</param>
+	private void OnSetBlockPacket(IConnection conn, Packets.Client.SetBlockPacket packet)
+	{
+		var pos = new Vector3Int(packet.X, packet.Y, packet.Z);
+
+		switch (packet.Mode)
+		{
+			case BlockChangeMode.Destroyed:
+				World?.SetBlock(pos, (byte)ClassicBlockType.Air);
+				break;
+
+			case BlockChangeMode.Created:
+				World?.SetBlock(pos, packet.BlockType);
+				break;
+		}
 	}
 }

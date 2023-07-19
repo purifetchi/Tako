@@ -65,7 +65,7 @@ public partial class Server : IServer
 		World = new WorldGenerator()
 			.WithDimensions(new Vector3Int(50, 20, 50))
 			.WithType(WorldGenerator.Type.Flat)
-			.Build();
+			.Build(this);
 		RegisterHandlers();
 
 		_players = new();

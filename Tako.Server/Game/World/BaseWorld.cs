@@ -1,6 +1,8 @@
-﻿using Tako.Common.Logging;
+﻿using System.Net.Sockets;
+using Tako.Common.Logging;
 using Tako.Common.Numerics;
 using Tako.Definitions.Game.World;
+using Tako.Definitions.Network;
 using Tako.Definitions.Network.Connections;
 using Tako.Server.Logging;
 using Tako.Server.Network.Packets.Server;
@@ -12,6 +14,9 @@ namespace Tako.Server.Game.World;
 /// </summary>
 public class BaseWorld : IWorld
 {
+	/// <inheritdoc/>
+	public IServer Server { get; init; }
+
 	/// <summary>
 	/// The world data.
 	/// </summary>
@@ -31,10 +36,12 @@ public class BaseWorld : IWorld
 	/// The base world data.
 	/// </summary>
 	/// <param name="dimensions">The dimensions of the world.</param>
-	public BaseWorld(Vector3Int dimensions)
+	public BaseWorld(Vector3Int dimensions, IServer server)
 	{
 		_worldData = new byte[dimensions.X * dimensions.Y * dimensions.Z];
 		_dimensions = dimensions;
+
+		Server = server;
 	}
 
 	/// <inheritdoc/>
@@ -49,6 +56,14 @@ public class BaseWorld : IWorld
 	{
 		var i = pos.X + pos.Z * _dimensions.X + pos.Y * _dimensions.X * _dimensions.Z;
 		_worldData[i] = block;
+
+		Server.NetworkManager.SendToAll(new SetBlockPacket
+		{
+			X = (short)pos.X,
+			Y = (short)pos.Y,
+			Z = (short)pos.Z,
+			BlockType = block
+		});
 	}
 
 	/// <inheritdoc/>

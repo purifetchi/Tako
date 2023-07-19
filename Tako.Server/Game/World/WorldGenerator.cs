@@ -1,6 +1,7 @@
 ﻿using Tako.Common.Logging;
 using Tako.Common.Numerics;
 using Tako.Definitions.Game.World;
+using Tako.Definitions.Network;
 using Tako.Server.Logging;
 
 namespace Tako.Server.Game.World;
@@ -57,11 +58,11 @@ public class WorldGenerator
 	/// Builds the world.
 	/// </summary>
 	/// <returns>The built world.</returns>
-	public IWorld Build()
+	public IWorld Build(IServer server)
 	{
 		_logger.Info($"Generating world of type {_type} and dimensions {_dimensions}.");
 
-		var baseWorld = new BaseWorld(_dimensions);
+		var baseWorld = new BaseWorld(_dimensions, server);
 		switch (_type)
 		{
 			case Type.Flat:
