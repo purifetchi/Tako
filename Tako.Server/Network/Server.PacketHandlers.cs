@@ -1,4 +1,6 @@
-﻿using Tako.Definitions.Network.Connections;
+﻿using System.Numerics;
+using Tako.Common.Numerics;
+using Tako.Definitions.Network.Connections;
 using Tako.Server.Network.Packets.Client;
 using Tako.Server.Network.Packets.Server;
 
@@ -44,6 +46,8 @@ public partial class Server
 	{
 		Players.Values
 			.FirstOrDefault(player => player.Connection == conn)?
-			.SetPosition(new System.Numerics.Vector3(packet.X, packet.Y, packet.Z));
+			.SetPositionAndOrientation(
+				new Vector3(packet.X, packet.Y, packet.Z), 
+				new Orientation(packet.Yaw, packet.Pitch));
 	}
 }

@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
+using Tako.Common.Numerics;
 using Tako.Definitions.Game.Players;
 using Tako.Definitions.Network;
 using Tako.Definitions.Network.Connections;
@@ -28,6 +29,9 @@ public class Player : IPlayer
 
 	/// <inheritdoc/>
 	public Vector3 Position { get; private set; } = Vector3.Zero;
+
+	/// <inheritdoc/>
+	public Orientation Orientation { get; private set; }
 
 	/// <inheritdoc/>
 	public IConnection? Connection { get; init; }
@@ -63,37 +67,37 @@ public class Player : IPlayer
 	}
 
 	/// <inheritdoc/>
-	public void SetPosition(Vector3 position)
+	public void SetPositionAndOrientation(Vector3 position, Orientation orientation)
 	{
-		// If the positions are roughly similar, don't do anything.
-		if (Vector3.DistanceSquared(Position, position) < float.Epsilon)
-			return;
-
 		Position = position;
+		Orientation = orientation;
+
 		Server.NetworkManager.SendToAllThatMatch(new SetPositionAndOrientationPacket
 		{
 			PlayerId = PlayerId,
 			X = position.X,
 			Y = position.Y,
 			Z = position.Z,
-			Yaw = 0,
-			Pitch = 0
+			Yaw = Orientation.Yaw,
+			Pitch = Orientation.Pitch
 		}, conn => conn != Connection);
 	}
 
 	/// <inheritdoc/>
 	public void Spawn(Vector3 position)
 	{
+		Position = position;
+
 		// First send the packet to the player that just joined.
 		Connection?.Send(new SpawnPlayerPacket
 		{
 			PlayerId = SELF_PLAYER_MARKER,
 			PlayerName = Name,
-			X = position.X,
-			Y = position.Y,
-			Z = position.Z,
-			Pitch = 0,
-			Yaw = 0
+			X = Position.X,
+			Y = Position.Y,
+			Z = Position.Z,
+			Pitch = Orientation.Pitch,
+			Yaw = Orientation.Yaw
 		});
 
 		// Then to everyone else.
@@ -101,11 +105,11 @@ public class Player : IPlayer
 		{
 			PlayerId = PlayerId,
 			PlayerName = Name,
-			X = position.X,
-			Y = position.Y,
-			Z = position.Z,
-			Pitch = 0,
-			Yaw = 0
+			X = Position.X,
+			Y = Position.Y,
+			Z = Position.Z,
+			Pitch = Orientation.Pitch,
+			Yaw = Orientation.Yaw
 		}, conn => conn != Connection);
 	}
 }

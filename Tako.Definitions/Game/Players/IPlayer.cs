@@ -1,4 +1,5 @@
 ﻿using System.Numerics;
+using Tako.Common.Numerics;
 using Tako.Definitions.Network;
 using Tako.Definitions.Network.Connections;
 
@@ -30,6 +31,11 @@ public interface IPlayer
 	Vector3 Position { get; }
 
 	/// <summary>
+	/// The orientation of the player.
+	/// </summary>
+	Orientation Orientation { get; }
+
+	/// <summary>
 	/// The connection this player has.
 	/// </summary>
 	IConnection? Connection { get; }
@@ -46,10 +52,11 @@ public interface IPlayer
 	void SetOpStatus(bool op);
 
 	/// <summary>
-	/// Sets the position of this player.
+	/// Sets the position and orientation of this player.
 	/// </summary>
 	/// <param name="position">The position.</param>
-	void SetPosition(Vector3 position);
+	/// <param name="orientation">The orientation.</param>
+	void SetPositionAndOrientation(Vector3 position, Orientation orientation);
 
 	/// <summary>
 	/// Spawns the player at the given position.
