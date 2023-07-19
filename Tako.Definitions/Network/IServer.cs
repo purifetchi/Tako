@@ -1,4 +1,5 @@
-﻿using Tako.Definitions.Game.Players;
+﻿using Tako.Definitions.Game.Chat;
+using Tako.Definitions.Game.Players;
 using Tako.Definitions.Game.World;
 using Tako.Definitions.Network.Connections;
 
@@ -23,6 +24,11 @@ public interface IServer
 	/// The dictionary containing all players.
 	/// </summary>
 	IReadOnlyDictionary<sbyte, IPlayer> Players { get; }
+
+	/// <summary>
+	/// The chat instance for this server.
+	/// </summary>
+	IChat Chat { get; }
 
 	/// <summary>
 	/// Adds a player for the given connection.

@@ -16,6 +16,7 @@ public partial class Server
 		NetworkManager.PacketProcessor.RegisterPacket<ClientIdentificationPacket>(OnClientIdentificationPacket, 0x00);
 		NetworkManager.PacketProcessor.RegisterPacket<Packets.Client.SetBlockPacket>(OnSetBlockPacket, 0x05);
 		NetworkManager.PacketProcessor.RegisterPacket<PositionAndOrientationPacket>(OnPositionAndOrientationPacket, 0x08);
+		NetworkManager.PacketProcessor.RegisterPacket<Packets.Client.MessagePacket>(OnMessagePacket, 0x0d);
 	}
 
 	/// <summary>
@@ -35,7 +36,7 @@ public partial class Server
 
 		World?.StreamTo(conn);
 		AddPlayer(packet.Username, conn)
-			.Spawn(new System.Numerics.Vector3(20, 12, 20));
+			.Spawn(new Vector3(20, 12, 20));
 		SpawnMissingPlayersFor(conn);
 	}
 
@@ -72,5 +73,24 @@ public partial class Server
 				World?.SetBlock(pos, packet.BlockType);
 				break;
 		}
+	}
+
+	/// <summary>
+	/// Handles the message packet.
+	/// </summary>
+	/// <param name="conn">The connection.</param>
+	/// <param name="packet">The packet.</param>
+	private void OnMessagePacket(IConnection conn, Packets.Client.MessagePacket packet)
+	{
+		var player = Players.Values
+			.FirstOrDefault(player => player.Connection == conn);
+
+		if (player is null)
+		{
+			_logger.Warn($"An unknown player tried to send a chat messsage. [id={conn.ConnectionId}]");
+			return;
+		}
+
+		Chat.SendMessage(player, packet.Message);
 	}
 }

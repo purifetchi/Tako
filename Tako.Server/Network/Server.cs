@@ -1,10 +1,12 @@
 ﻿using Tako.Common.Allocation;
 using Tako.Common.Logging;
 using Tako.Common.Numerics;
+using Tako.Definitions.Game.Chat;
 using Tako.Definitions.Game.Players;
 using Tako.Definitions.Game.World;
 using Tako.Definitions.Network;
 using Tako.Definitions.Network.Connections;
+using Tako.Server.Game.Chat;
 using Tako.Server.Game.Players;
 using Tako.Server.Game.World;
 using Tako.Server.Logging;
@@ -25,6 +27,9 @@ public partial class Server : IServer
 
 	/// <inheritdoc/>
 	public IReadOnlyDictionary<sbyte, IPlayer> Players => _players;
+
+	/// <inheritdoc/>
+	public IChat Chat { get; private set; } = null!;
 
 	/// <summary>
 	/// The server name.
@@ -66,6 +71,7 @@ public partial class Server : IServer
 			.WithDimensions(new Vector3Int(50, 20, 50))
 			.WithType(WorldGenerator.Type.Flat)
 			.Build(this);
+		Chat = new Chat(this);
 		RegisterHandlers();
 
 		_players = new();

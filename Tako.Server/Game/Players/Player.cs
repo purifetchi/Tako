@@ -111,5 +111,7 @@ public class Player : IPlayer
 			Pitch = Orientation.Pitch,
 			Yaw = Orientation.Yaw
 		}, conn => conn != Connection);
+
+		Server.Chat.SendServerMessage($"{Name} has joined!");
 	}
 }
