@@ -1,4 +1,4 @@
-﻿namespace Tako.Common.Game.World;
+﻿namespace Tako.Definitions.Game.World;
 
 /// <summary>
 /// The known classic blocks.
