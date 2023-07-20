@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="500" height="200" src="Meta/tako.png"><br>
+  <img width="500" src="Meta/tako.png"><br>
   <b>Tako (タコ) 🐙 - An extensible Minecraft Classic server.</b>
 </p>
 
