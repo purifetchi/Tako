@@ -1,4 +1,5 @@
-﻿using Tako.Common.Logging;
+﻿using System.Numerics;
+using Tako.Common.Logging;
 using Tako.Common.Numerics;
 using Tako.Definitions.Game;
 using Tako.Definitions.Game.World;
@@ -84,20 +85,29 @@ public class WorldGenerator : IWorldGenerator
 	/// <param name="world">The world.</param>
 	private void BuildFlat(IWorld world)
 	{
+		const float playerHeight = 2f;
+
+		var halfY = _dimensions.Y / 2;
+
 		for (var x = 0; x < _dimensions.X; x++)
 		{
 			for (var z = 0; z < _dimensions.Z; z++)
 			{
-				for (var y = 0; y < 11; y++)
+				for (var y = 0; y < halfY + 1; y++)
 				{
 					var pos = new Vector3Int(x, y, z);
-					if (y < 10)
+					if (y < halfY)
 						world.SetBlock(pos, (byte)ClassicBlockType.Dirt);
 					else
 						world.SetBlock(pos, (byte)ClassicBlockType.Grass);
 				}
 			}
 		}
+
+		world.SpawnPoint = new Vector3(
+			_dimensions.X / 2f, 
+			_dimensions.Y / 2f + playerHeight, 
+			_dimensions.Z / 2f);
 	}
 
 	/// <summary>

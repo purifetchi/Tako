@@ -1,4 +1,5 @@
-﻿using Tako.Common.Logging;
+﻿using System.Numerics;
+using Tako.Common.Logging;
 using Tako.Common.Numerics;
 using Tako.Definitions.Game;
 using Tako.Definitions.Game.World;
@@ -15,6 +16,9 @@ public class BaseWorld : IWorld
 {
 	/// <inheritdoc/>
 	public IRealm Realm { get; init; }
+
+	/// <inheritdoc/>
+	public Vector3 SpawnPoint { get; set; } = Vector3.Zero;
 
 	/// <summary>
 	/// The world data.

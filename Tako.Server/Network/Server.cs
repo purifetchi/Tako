@@ -80,7 +80,7 @@ public partial class Server : IServer
 
 		CreateRealm("test", false)
 			.GetWorldGenerator()
-			.WithDimensions(new Vector3Int(30, 20, 30))
+			.WithDimensions(new Vector3Int(50, 30, 50))
 			.WithType(WorldType.Flat)
 			.Build();
 	}

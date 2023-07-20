@@ -115,10 +115,14 @@ public class Realm : IRealm
 		player.SetRealm(this);
 
 		_players[player.PlayerId] = player;
-		World?.StreamTo(player.Connection!);
-		player.Spawn(new System.Numerics.Vector3(20, 12, 20));
-		
-		SpawnMissingPlayersFor(player);
+
+		if (World is not null)
+		{
+			World.StreamTo(player.Connection!);
+			player.Spawn(World.SpawnPoint);
+
+			SpawnMissingPlayersFor(player);
+		}
 	}
 
 	/// <inheritdoc/>

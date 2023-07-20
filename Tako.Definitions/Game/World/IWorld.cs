@@ -1,4 +1,5 @@
-﻿using Tako.Common.Numerics;
+﻿using System.Numerics;
+using Tako.Common.Numerics;
 using Tako.Definitions.Network.Connections;
 
 namespace Tako.Definitions.Game.World;
@@ -12,6 +13,11 @@ public interface IWorld
 	/// The server this world belongs to.
 	/// </summary>
 	IRealm Realm { get; }
+
+    /// <summary>
+    /// The spawn point for the world.
+    /// </summary>
+    Vector3 SpawnPoint { get; set; }
 
     /// <summary>
     /// Gets the block given its xyz coords.
