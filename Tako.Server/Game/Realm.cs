@@ -1,5 +1,4 @@
-﻿using System.Net.Sockets;
-using Tako.Common.Logging;
+﻿using Tako.Common.Logging;
 using Tako.Definitions.Game;
 using Tako.Definitions.Game.Players;
 using Tako.Definitions.Game.World;

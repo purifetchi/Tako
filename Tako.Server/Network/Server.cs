@@ -23,7 +23,7 @@ namespace Tako.Server.Network;
 public partial class Server : IServer
 {
 	/// <inheritdoc/>
-	public IReadOnlyList<IRealm> Realms => _realms;
+	public IRealmManager RealmManager { get; init; } = null!;
 
 	/// <inheritdoc/>
 	public INetworkManager NetworkManager { get; private set; } = null!;
@@ -45,11 +45,6 @@ public partial class Server : IServer
 	private bool _active;
 
 	/// <summary>
-	/// The realms.
-	/// </summary>
-	private readonly List<IRealm> _realms;
-
-	/// <summary>
 	/// The player id allocator.
 	/// </summary>
 	private readonly IdAllocator<sbyte> _playerIdAllocator;
@@ -66,19 +61,20 @@ public partial class Server : IServer
 			int.Parse(Settings.Get("port") ?? "25565"));
 
 		Chat = new Chat(this);
+		RealmManager = new RealmManager(this);
+
 		RegisterChatCommands();
 		RegisterHandlers();
 
-		_realms = new();
 		_playerIdAllocator = new(sbyte.MaxValue);
 
-		CreateRealm("default", true)
+		RealmManager.GetOrCreateRealm("default")
 			.GetWorldGenerator()
 			.WithDimensions(new Vector3Int(30, 20, 30))
 			.WithType(WorldType.Flat)
 			.Build();
 
-		CreateRealm("test", false)
+		RealmManager.GetOrCreateRealm("test")
 			.GetWorldGenerator()
 			.WithDimensions(new Vector3Int(50, 30, 50))
 			.WithType(WorldType.Flat)
@@ -96,24 +92,10 @@ public partial class Server : IServer
 		while (_active)
 		{
 			NetworkManager.Receive();
-
-			foreach (var realm in Realms)
-			{
-				realm.HeartbeatPlayers();
-				realm.World?.Simulate();
-			}
+			RealmManager.SimulateRealms();
 
 			Thread.Sleep(10);
 		}
-	}
-
-	/// <inheritdoc/>
-	public IRealm CreateRealm(string name, bool primary = false)
-	{
-		var realm = new Realm(name, primary, this);
-		_realms.Add(realm);
-
-		return realm;
 	}
 
 	/// <inheritdoc/>

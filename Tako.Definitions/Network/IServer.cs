@@ -13,9 +13,9 @@ namespace Tako.Definitions.Network;
 public interface IServer
 {
 	/// <summary>
-	/// The realms inside of this server.
+	/// The realm manager of this server.
 	/// </summary>
-	IReadOnlyList<IRealm> Realms { get; }
+	IRealmManager RealmManager { get; }
 
 	/// <summary>
 	/// The network manager for this server.
@@ -31,14 +31,6 @@ public interface IServer
 	/// The server settings.
 	/// </summary>
 	ISettings Settings { get; }
-
-	/// <summary>
-	/// Creates a new realm.
-	/// </summary>
-	/// <param name="name">The name of the realm.</param>
-	/// <param name="primary">Is it a primary realm?</param>
-	/// <returns>The realm.</returns>
-	IRealm CreateRealm(string name, bool primary = false);
 
 	/// <summary>
 	/// Adds a player for the given connection.

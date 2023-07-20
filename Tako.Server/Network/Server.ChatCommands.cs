@@ -41,7 +41,7 @@ public partial class Server
 	/// <param name="args">The args.</param>
 	private void OnMoveCommand(IPlayer player, string[] args)
 	{
-		var realm = Realms.FirstOrDefault(realm => realm.Name == args[1]);
+		var realm = RealmManager.GetRealm(args[1]);
 		if (realm is null)
 		{
 			Chat.SendServerMessageTo(player, "&cThis realm does not exist.");
