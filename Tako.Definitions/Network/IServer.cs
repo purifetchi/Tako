@@ -3,6 +3,7 @@ using Tako.Definitions.Game.Chat;
 using Tako.Definitions.Game.Players;
 using Tako.Definitions.Game.World;
 using Tako.Definitions.Network.Connections;
+using Tako.Definitions.Settings;
 
 namespace Tako.Definitions.Network;
 
@@ -25,6 +26,11 @@ public interface IServer
 	/// The chat instance for this server.
 	/// </summary>
 	IChat Chat { get; }
+
+	/// <summary>
+	/// The server settings.
+	/// </summary>
+	ISettings Settings { get; }
 
 	/// <summary>
 	/// Creates a new realm.

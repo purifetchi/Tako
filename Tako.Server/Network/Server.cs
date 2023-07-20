@@ -1,4 +1,5 @@
-﻿using Tako.Common.Allocation;
+﻿using System.Net;
+using Tako.Common.Allocation;
 using Tako.Common.Logging;
 using Tako.Common.Numerics;
 using Tako.Definitions.Game;
@@ -7,11 +8,12 @@ using Tako.Definitions.Game.Players;
 using Tako.Definitions.Game.World;
 using Tako.Definitions.Network;
 using Tako.Definitions.Network.Connections;
+using Tako.Definitions.Settings;
 using Tako.Server.Game;
 using Tako.Server.Game.Chat;
 using Tako.Server.Game.Players;
 using Tako.Server.Logging;
-using Tako.Server.Network.Packets.Server;
+using Tako.Server.Settings;
 
 namespace Tako.Server.Network;
 
@@ -28,6 +30,9 @@ public partial class Server : IServer
 
 	/// <inheritdoc/>
 	public IChat Chat { get; private set; } = null!;
+
+	/// <inheritdoc/>
+	public ISettings Settings { get; init; } = null!;
 
 	/// <summary>
 	/// The logger.
@@ -54,7 +59,12 @@ public partial class Server : IServer
 	/// </summary>
 	public Server()
 	{
-		NetworkManager = new NetworkManager(System.Net.IPAddress.Any, 25565);
+		Settings = new FileBackedSettings("server.properties");
+
+		NetworkManager = new NetworkManager(
+			IPAddress.Parse(Settings.Get("ip") ?? "127.0.0.1"), 
+			int.Parse(Settings.Get("port") ?? "25565"));
+
 		Chat = new Chat(this);
 		RegisterChatCommands();
 		RegisterHandlers();

@@ -14,16 +14,21 @@ namespace Tako.Server.Game.Chat;
 /// </summary>
 public class Chat : IChat
 {
+	/// <summary>
+	/// The fallback chat template.
+	/// </summary>
+	private const string FALLBACK_CHAT_TEMPLATE = "<{0}>: {1}";
+
 	/// <inheritdoc/>
 	public IServer Server { get; init; }
 
 	/// <inheritdoc/>
-	public string MessageTemplate { get; set; } = "<{0}>: {1}";
+	public string MessageTemplate { get; set; }
 
 	/// <summary>
 	/// The logger.
 	/// </summary>
-	private ILogger<Chat> _logger = LoggerFactory<Chat>.Get();
+	private readonly ILogger<Chat> _logger = LoggerFactory<Chat>.Get();
 
 	/// <summary>
 	/// The chat commands.
@@ -37,6 +42,8 @@ public class Chat : IChat
 	public Chat(IServer server)
 	{
 		Server = server;
+		MessageTemplate = Server.Settings.Get("chat-template") ?? FALLBACK_CHAT_TEMPLATE;
+
 		_commands = new();
 	}
 

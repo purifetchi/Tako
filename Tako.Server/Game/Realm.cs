@@ -106,8 +106,8 @@ public class Realm : IRealm
 		player.Connection?.Send(new ServerIdentificationPacket
 		{
 			ProtocolVersion = 7,
-			ServerName = "Test server",
-			ServerMOTD = "Test motd",
+			ServerName = Server.Settings.Get("server-name") ?? string.Empty,
+			ServerMOTD = Server.Settings.Get("server-name") ?? string.Empty,
 			Type = PlayerType.Regular
 		});
 
