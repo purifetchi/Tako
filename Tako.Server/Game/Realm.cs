@@ -106,7 +106,7 @@ public class Realm : IRealm
 		{
 			ProtocolVersion = 7,
 			ServerName = Server.Settings.Get("server-name") ?? string.Empty,
-			ServerMOTD = Server.Settings.Get("server-name") ?? string.Empty,
+			ServerMOTD = Server.Settings.Get("motd") ?? string.Empty,
 			Type = PlayerType.Regular
 		});
 
