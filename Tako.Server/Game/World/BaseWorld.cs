@@ -4,6 +4,7 @@ using Tako.Common.Numerics;
 using Tako.Definitions.Game;
 using Tako.Definitions.Game.World;
 using Tako.Definitions.Network.Connections;
+using Tako.NBT.Tags;
 using Tako.Server.Logging;
 using Tako.Server.Network.Packets.Server;
 
@@ -87,4 +88,27 @@ public class BaseWorld : IWorld
 			.Stream()
 			.Finish();
 	}
+
+	/// <summary>
+	/// Loads data from a ClassicWorld NBT file.
+	/// </summary>
+	/// <param name="tag">The outermost compound tag.</param>
+	internal void LoadDataFromNBT(CompoundTag nbt)
+	{
+		_dimensions = new Vector3Int(
+			nbt.Get<ShortTag>("X")!.Value,
+			nbt.Get<ShortTag>("Y")!.Value,
+			nbt.Get<ShortTag>("Z")!.Value);
+
+		// Copy the block array.
+		var blockArray = nbt.Get<ByteArrayTag>("BlockArray")!.Values;
+		_worldData = new byte[blockArray.Length];
+		Buffer.BlockCopy(blockArray, 0, _worldData, 0, _worldData.Length);
+
+		var spawn = nbt.Get<CompoundTag>("Spawn")!;
+        SpawnPoint = new Vector3(
+            (FShort)spawn.Get<ShortTag>("X")!.Value,
+            (FShort)spawn.Get<ShortTag>("Y")!.Value,
+            (FShort)spawn.Get<ShortTag>("Z")!.Value);
+    }
 }

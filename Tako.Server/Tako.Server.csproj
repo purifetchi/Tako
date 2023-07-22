@@ -11,6 +11,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Tako.Common\Tako.Common.csproj" />
     <ProjectReference Include="..\Tako.Definitions\Tako.Definitions.csproj" />
+    <ProjectReference Include="..\Tako.NBT\Tako.NBT.csproj" />
   </ItemGroup>
 
 </Project>

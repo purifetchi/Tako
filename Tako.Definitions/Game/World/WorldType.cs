@@ -7,5 +7,6 @@ public enum WorldType
 {
 	Flat,
 	Classic,
+	LoadFromFile,
 	Custom
 }

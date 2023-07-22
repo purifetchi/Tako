@@ -100,7 +100,7 @@ public class WorldStreamer
 		do
 		{
 			var amount = Math.Min(1024, size - cursor);
-			var percent = (byte)Math.Round(((cursor + amount) / size) * 100d);
+			var percent = (byte)Math.Round(((float)(cursor + amount) / size) * 100d);
 
 			_logger.Info($"{percent}% of the world sent...");
 

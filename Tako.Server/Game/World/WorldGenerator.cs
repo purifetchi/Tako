@@ -4,6 +4,7 @@ using Tako.Common.Numerics;
 using Tako.Definitions.Game;
 using Tako.Definitions.Game.World;
 using Tako.Definitions.Network;
+using Tako.NBT.Tags;
 using Tako.Server.Logging;
 
 namespace Tako.Server.Game.World;
@@ -27,6 +28,11 @@ public class WorldGenerator : IWorldGenerator
 	/// The type of the world.
 	/// </summary>
 	private WorldType _type;
+
+	/// <summary>
+	/// The filename.
+	/// </summary>
+	private string? _filename;
 
 	/// <summary>
 	/// The logger.
@@ -57,6 +63,13 @@ public class WorldGenerator : IWorldGenerator
 	}
 
 	/// <inheritdoc/>
+	public IWorldGenerator WithFilename(string filename)
+	{
+		_filename = filename;
+		return this;
+	}
+
+	/// <inheritdoc/>
 	public void Build()
 	{
 		_logger.Info($"Generating world of type {_type} and dimensions {_dimensions}.");
@@ -70,6 +83,10 @@ public class WorldGenerator : IWorldGenerator
 
 			case WorldType.Classic:
 				BuildClassic(baseWorld);
+				break;
+
+			case WorldType.LoadFromFile:
+				LoadFromFile(baseWorld, _filename!);
 				break;
 
 			default:
@@ -117,5 +134,16 @@ public class WorldGenerator : IWorldGenerator
 	private void BuildClassic(IWorld world)
 	{
 
+	}
+
+	/// <summary>
+	/// Loads a world from a ClassicWorld NBT file.
+	/// </summary>
+	/// <param name="world">The world.</param>
+	/// <param name="filename">The filename.</param>
+	private void LoadFromFile(BaseWorld world, string filename)
+	{
+		var tag = (CompoundTag)Tag.FromFile(filename);
+		world.LoadDataFromNBT(tag);
 	}
 }

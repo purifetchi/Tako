@@ -19,6 +19,12 @@ public interface IWorldGenerator
 	IWorldGenerator WithType(WorldType type);
 
 	/// <summary>
+	/// Sets the filename for this world. (Or the filename for the world to load)
+	/// </summary>
+	/// <param name="filename">The filename</param>
+	IWorldGenerator WithFilename(string filename);
+
+	/// <summary>
 	/// Builds the world.
 	/// </summary>
 	void Build();
