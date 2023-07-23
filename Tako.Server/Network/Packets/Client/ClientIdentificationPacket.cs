@@ -1,4 +1,5 @@
 ﻿using Tako.Common.Network.Serialization;
+using Tako.Definitions.Network;
 using Tako.Definitions.Network.Capabilities;
 using Tako.Definitions.Network.Packets;
 
@@ -15,7 +16,7 @@ public struct ClientIdentificationPacket : IClientPacket
 	/// <summary>
 	/// The protocol version.
 	/// </summary>
-	public byte ProtocolVersion { get; private set; }
+	public ProtocolVersion ProtocolVersion { get; private set; }
 
 	/// <summary>
 	/// The username.
@@ -35,7 +36,7 @@ public struct ClientIdentificationPacket : IClientPacket
 	/// <inheritdoc/>
 	public void Deserialize(ref NetworkReader reader)
 	{
-		ProtocolVersion = reader.Read<byte>();
+		ProtocolVersion = reader.Read<ProtocolVersion>();
 		Username = reader.ReadString();
 		VerificationKey = reader.ReadString();
 		Capabilities = reader.Read<ClientIdentificationCapability>();

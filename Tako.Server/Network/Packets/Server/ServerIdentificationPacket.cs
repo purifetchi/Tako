@@ -1,5 +1,6 @@
 ﻿using Tako.Common.Network.Serialization;
 using Tako.Definitions.Game.Players;
+using Tako.Definitions.Network;
 using Tako.Definitions.Network.Packets;
 
 namespace Tako.Server.Network.Packets.Server;
@@ -15,7 +16,7 @@ public struct ServerIdentificationPacket : IServerPacket
 	/// <summary>
 	/// The protocol version.
 	/// </summary>
-	public byte ProtocolVersion { get; set; }
+	public ProtocolVersion ProtocolVersion { get; set; }
 
 	/// <summary>
 	/// The server name.

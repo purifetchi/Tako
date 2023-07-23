@@ -1,6 +1,7 @@
 ﻿using System.Numerics;
 using Tako.Common.Numerics;
 using Tako.Definitions.Game.World;
+using Tako.Definitions.Network;
 using Tako.Definitions.Network.Connections;
 using Tako.Server.Network.Packets.Client;
 
@@ -25,6 +26,17 @@ public partial class Server
 	private void OnClientIdentificationPacket(IConnection conn, ClientIdentificationPacket packet)
 	{
 		_logger.Info($"User {packet.Username} with protocol version {packet.ProtocolVersion} wants to log in. [Key={packet.VerificationKey}, Capabilities={packet.Capabilities}]");
+		
+		if (packet.ProtocolVersion != ProtocolVersion.Version7)
+		{
+			conn?.Send(new Packets.Server.DisconnectPlayerPacket
+			{
+				DisconnectReason = "Unsupported protocol version."
+			});
+			conn?.Disconnect();
+			return;
+		}
+
 		var primaryRealm = RealmManager.GetDefaultRealm()!;
 
 		var player = AddPlayer(packet.Username, primaryRealm, conn);
