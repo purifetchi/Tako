@@ -27,7 +27,7 @@ All of the definitions needed for plugins will be exposed via the `Tako.Definiti
 - [x] Synchronizing the world
 - [x] Realms (multi-world server)
 - [ ] Loading configuration
-- [ ] Saving/loading realms and worlds
+- [x] Saving/loading realms and worlds
 - [ ] A reimplementation of Classic's world gen.
 - [ ] The plugin interface and plugin loading.
 - [ ] Support for various [Classic Protocol Extensions](https://wiki.vg/Classic_Protocol_Extension) features.
