@@ -1,7 +1,12 @@
 ﻿using System.Buffers.Binary;
 using System.Runtime.InteropServices;
+using Tako.NBT.Serialization;
 
 namespace Tako.NBT.Tags;
+
+/// <summary>
+/// A length-prefixed array of signed bytes. 
+/// </summary>
 public class ByteArrayTag : Tag
 {
     /// <summary>
@@ -39,5 +44,15 @@ public class ByteArrayTag : Tag
         } while (readTotal != length);
         
         return this;
+    }
+
+    /// <inheritdoc/>
+    internal override void Serialize(NBTWriter writer)
+    {
+        var bw = writer.GetBinaryWriter();
+        bw.Write(BinaryPrimitives.ReverseEndianness(Values.Length));
+
+        var asBytes = MemoryMarshal.Cast<sbyte, byte>(Values);
+        bw.Write(asBytes);
     }
 }

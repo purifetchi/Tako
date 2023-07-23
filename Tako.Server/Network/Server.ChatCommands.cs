@@ -11,6 +11,7 @@ public partial class Server
 	{
 		Chat.RegisterChatCommand("op", OnOpCommand);
 		Chat.RegisterChatCommand("move", OnMoveCommand);
+		Chat.RegisterChatCommand("save", OnSaveCommand);
 	}
 
 	/// <summary>
@@ -49,5 +50,17 @@ public partial class Server
 		}
 
 		realm.MovePlayer(player);
+	}
+
+	/// <summary>
+	/// Handles the /save command.
+	/// </summary>
+	/// <param name="player">The player.</param>
+	/// <param name="args">The args.</param>
+	private void OnSaveCommand(IPlayer player, string[] args)
+	{
+		player.Realm?
+			.World?
+			.Save("test.cw");
 	}
 }

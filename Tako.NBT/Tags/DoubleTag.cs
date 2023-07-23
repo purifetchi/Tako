@@ -1,4 +1,5 @@
 ﻿using System.Buffers.Binary;
+using Tako.NBT.Serialization;
 
 namespace Tako.NBT.Tags;
 
@@ -33,5 +34,12 @@ public class DoubleTag : Tag
     {
         Value = reader.ReadDouble();
         return this;
+    }
+
+    /// <inheritdoc/>
+    internal override void Serialize(NBTWriter writer)
+    {
+        writer.GetBinaryWriter()
+            .Write(Value);
     }
 }

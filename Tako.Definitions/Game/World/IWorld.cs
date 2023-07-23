@@ -9,10 +9,10 @@ namespace Tako.Definitions.Game.World;
 /// </summary>
 public interface IWorld
 {
-	/// <summary>
-	/// The server this world belongs to.
-	/// </summary>
-	IRealm Realm { get; }
+    /// <summary>
+    /// The server this world belongs to.
+    /// </summary>
+    IRealm Realm { get; }
 
     /// <summary>
     /// The spawn point for the world.
@@ -42,4 +42,10 @@ public interface IWorld
     /// </summary>
     /// <param name="conn">The connection.</param>
     void StreamTo(IConnection conn);
+
+    /// <summary>
+    /// Saves this world.
+    /// </summary>
+    /// <param name="filename">The filename.</param>
+    void Save(string filename);
 }

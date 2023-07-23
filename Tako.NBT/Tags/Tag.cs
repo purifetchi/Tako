@@ -1,6 +1,7 @@
 ﻿using System.Buffers.Binary;
 using System.IO.Compression;
 using System.Text;
+using Tako.NBT.Serialization;
 
 namespace Tako.NBT.Tags;
 
@@ -20,12 +21,6 @@ public abstract class Tag
     public string Name { get; init; }
 
     /// <summary>
-    /// Parses a tag from the binary reader.
-    /// </summary>
-    /// <param name="reader">The binary reader.</param>
-    internal abstract Tag Parse(BinaryReader reader);
-
-    /// <summary>
     /// Creates a new NBT tag.
     /// </summary>
     /// <param name="tagId">The tag id.</param>
@@ -41,6 +36,18 @@ public abstract class Tag
     /// </summary>
     /// <returns>The tag's value.</returns>
     public abstract object? GetValue();
+
+    /// <summary>
+    /// Parses a tag from the binary reader.
+    /// </summary>
+    /// <param name="reader">The binary reader.</param>
+    internal abstract Tag Parse(BinaryReader reader);
+
+    /// <summary>
+    /// Serializes this tag into the NBT writer.
+    /// </summary>
+    /// <param name="writer">The writer.</param>
+    internal abstract void Serialize(NBTWriter writer);
 
     /// <summary>
     /// Reads a tag stream from a file.

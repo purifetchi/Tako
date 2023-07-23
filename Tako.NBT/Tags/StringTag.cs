@@ -1,5 +1,6 @@
 ﻿using System.Buffers.Binary;
 using System.Text;
+using Tako.NBT.Serialization;
 
 namespace Tako.NBT.Tags;
 
@@ -11,7 +12,7 @@ public class StringTag : Tag
 	/// <summary>
 	/// The string value.
 	/// </summary>
-	public string? Value { get; private set; }
+	public string? Value { get; set; }
 
 	/// <summary>
 	/// Creates a new string tag.
@@ -37,4 +38,10 @@ public class StringTag : Tag
 		Value = Encoding.UTF8.GetString(data);
 		return this;
 	}
+
+	/// <inheritdoc/>
+    internal override void Serialize(NBTWriter writer)
+    {
+		writer.WriteString(Value!);
+    }
 }

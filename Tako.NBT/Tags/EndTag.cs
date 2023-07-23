@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tako.NBT.Serialization;
 
 namespace Tako.NBT.Tags;
 
@@ -29,5 +30,10 @@ public class EndTag : Tag
     internal override Tag Parse(BinaryReader reader)
     {
         return this;
+    }
+
+    /// <inheritdoc/>
+    internal override void Serialize(NBTWriter writer)
+    {
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Buffers.Binary;
+using Tako.NBT.Serialization;
 
 namespace Tako.NBT.Tags;
 
@@ -33,5 +34,12 @@ public class ShortTag : Tag
     {
         Value = BinaryPrimitives.ReverseEndianness(reader.ReadInt16());
         return this;
+    }
+
+    /// <inheritdoc/>
+    internal override void Serialize(NBTWriter writer)
+    {
+        writer.GetBinaryWriter()
+            .Write(BinaryPrimitives.ReverseEndianness(Value));
     }
 }

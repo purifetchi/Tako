@@ -1,4 +1,6 @@
-﻿namespace Tako.NBT.Tags;
+﻿using Tako.NBT.Serialization;
+
+namespace Tako.NBT.Tags;
 
 /// <summary>
 /// A single signed byte
@@ -30,5 +32,12 @@ public class ByteTag : Tag
     {
         Value = reader.ReadSByte();
         return this;
+    }
+
+    /// <inheritdoc/>
+    internal override void Serialize(NBTWriter writer)
+    {
+        writer.GetBinaryWriter()
+            .Write(Value);
     }
 }

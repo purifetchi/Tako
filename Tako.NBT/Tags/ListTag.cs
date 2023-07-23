@@ -1,4 +1,5 @@
 ﻿using System.Buffers.Binary;
+using Tako.NBT.Serialization;
 
 namespace Tako.NBT.Tags;
 
@@ -10,7 +11,7 @@ public class ListTag : Tag
     /// <summary>
     /// The tag values.
     /// </summary>
-    public IList<Tag> Values { get; }
+    public IList<Tag> Values { get; set; }
 
     /// <summary>
     /// The tag id of the values.
@@ -43,5 +44,16 @@ public class ListTag : Tag
             Values.Add(ParseSingleTag(ValueTagID, string.Empty, reader));
 
         return this;
+    }
+
+    /// <inheritdoc/>
+    internal override void Serialize(NBTWriter writer)
+    {
+        var bw = writer.GetBinaryWriter();
+        bw.Write((byte)ValueTagID);
+        bw.Write(BinaryPrimitives.ReverseEndianness(Values.Count));
+
+        foreach (var value in Values)
+            value.Serialize(writer);
     }
 }
