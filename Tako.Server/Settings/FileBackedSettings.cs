@@ -90,6 +90,9 @@ public class FileBackedSettings : ISettings
 		Set("port", "25565");
 		Set("ip", "127.0.0.1");
 		Set("chat-template", "<{0}>: {1}");
+		Set("realms-directory", "maps");
+		Set("autosave", "true");
+		Set("autosave-delay", "300");
 
 		Save();
 	}

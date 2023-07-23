@@ -74,7 +74,7 @@ public partial class Server : IServer
 			.WithType(WorldType.Flat)
 			.Build();
 
-		RealmManager.GetOrCreateRealm("test")
+		RealmManager.GetOrCreateRealm("test", RealmCreationOptions.None)
 			.GetWorldGenerator()
 			.WithDimensions(new Vector3Int(50, 30, 50))
 			.WithType(WorldType.Flat)

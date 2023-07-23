@@ -20,17 +20,48 @@ public class RealmManager : IRealmManager
 	private readonly IServer _server;
 
 	/// <summary>
-	/// Creates a new realm manager.
+	/// The save directory for realms.
 	/// </summary>
-	/// <param name="server">The server instance.</param>
-	public RealmManager(IServer server)
+	private readonly string _saveDirectory;
+
+	/// <summary>
+	/// Is autosave enabled?
+	/// </summary>
+	private readonly bool _autosaveEnabled;
+
+	/// <summary>
+	/// The autosave delay.
+	/// </summary>
+	private readonly int _autosaveDelay;
+
+    /// <summary>
+    /// Last autosave.
+    /// </summary>
+    private long _lastAutosave;
+
+    /// <summary>
+    /// Creates a new realm manager.
+    /// </summary>
+    /// <param name="server">The server instance.</param>
+    public RealmManager(IServer server)
 	{
 		_server = server;
 		_realms = new List<Realm>();
-	}
+
+		_saveDirectory = server.Settings.Get("realms-directory") ?? "maps";
+		_autosaveEnabled = bool.Parse(server.Settings.Get("autosave") ?? "true");
+		_autosaveDelay = int.Parse(server.Settings.Get("autosave-delay") ?? "300");
+
+		_lastAutosave = DateTimeOffset.Now.ToUnixTimeSeconds();
+
+		if (!Directory.Exists(_saveDirectory))
+			Directory.CreateDirectory(_saveDirectory);
+    }
 
 	/// <inheritdoc/>
-	public IRealm GetOrCreateRealm(string name)
+	public IRealm GetOrCreateRealm(
+		string name,
+        RealmCreationOptions opts = RealmCreationOptions.AutosaveEnabled | RealmCreationOptions.LoadFromFileOnCreation)
 	{
 		var maybeRealm = _realms.FirstOrDefault(realm => realm.Name == name);
 		if (maybeRealm is not null)
@@ -39,6 +70,7 @@ public class RealmManager : IRealmManager
 		var realm = new Realm(name, _realms.Count == 0, _server);
 		_realms.Add(realm);
 
+		realm.AutoSave = opts.HasFlag(RealmCreationOptions.AutosaveEnabled);
 		return realm;
 	}
 
@@ -88,6 +120,31 @@ public class RealmManager : IRealmManager
 
 			realm.HeartbeatPlayers();
 			realm.World?.Simulate();
+		}
+
+		if (_autosaveEnabled &&
+			DateTimeOffset.Now.ToUnixTimeSeconds() - _lastAutosave >= _autosaveDelay)
+		{
+			AutosaveRealms();
+            _lastAutosave = DateTimeOffset.Now.ToUnixTimeSeconds();
+        }
+	}
+
+	/// <summary>
+	/// Performs an autosave on all the realms.
+	/// </summary>
+	private void AutosaveRealms()
+	{
+		foreach (var realm in _realms)
+		{
+			if (!realm.AutoSave)
+				continue;
+
+			// TODO(pref): Do not save realms that haven't had any activity for a prolonged period.
+			//			   In reality, we should probably put them into some sort of hibernation state
+			//			   where they unload their world and stuff, but that's for a later period.
+			realm.World?
+				.Save($"{_saveDirectory}/{realm.Name}.cw");
 		}
 	}
 }

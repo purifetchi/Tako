@@ -22,6 +22,9 @@ public class Realm : IRealm
 	/// <inheritdoc/>
 	public bool IsPrimaryRealm { get; init; }
 
+    /// <inheritdoc/>
+    public bool AutoSave { get; set; }
+
 	/// <inheritdoc/>
 	public IWorld World { get; private set; } = null!;
 
@@ -200,5 +203,4 @@ public class Realm : IRealm
 			});
 		}
 	}
-
 }

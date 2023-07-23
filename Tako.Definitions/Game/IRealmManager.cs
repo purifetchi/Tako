@@ -11,8 +11,10 @@ public interface IRealmManager
 	/// Gets or creates a realm with the given name.
 	/// </summary>
 	/// <param name="name">The realm name.</param>
+	/// <param name="opts">The realm creation options.</param>
 	/// <returns>The realm.</returns>
-	IRealm GetOrCreateRealm(string name);
+	IRealm GetOrCreateRealm(string name, 
+		RealmCreationOptions opts = RealmCreationOptions.AutosaveEnabled | RealmCreationOptions.LoadFromFileOnCreation);
 
 	/// <summary>
 	/// Gets a realm (but does not create one when one doesn't exist).

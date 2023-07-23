@@ -22,6 +22,11 @@ public interface IRealm
 	bool IsPrimaryRealm { get; }
 
 	/// <summary>
+	/// Should this realm be auto-savable?
+	/// </summary>
+	bool AutoSave { get; set; }
+
+	/// <summary>
 	/// The world list.
 	/// </summary>
 	IWorld World { get; }
