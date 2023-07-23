@@ -28,9 +28,10 @@ public class ByteTag : Tag
     }
 
     /// <inheritdoc/>
-    internal override Tag Parse(BinaryReader reader)
+    internal override Tag Parse(NBTReader reader)
     {
-        Value = reader.ReadSByte();
+        Value = reader.GetBinaryReader()
+            .ReadSByte();
         return this;
     }
 

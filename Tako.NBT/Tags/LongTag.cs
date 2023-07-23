@@ -30,9 +30,9 @@ public class LongTag : Tag
     }
 
     /// <inheritdoc/>
-    internal override Tag Parse(BinaryReader reader)
+    internal override Tag Parse(NBTReader reader)
     {
-        Value = BinaryPrimitives.ReverseEndianness(reader.ReadInt64());
+        Value = BinaryPrimitives.ReverseEndianness(reader.GetBinaryReader().ReadInt64());
         return this;
     }
 

@@ -31,18 +31,12 @@ public class ByteArrayTag : Tag
     }
 
     /// <inheritdoc/>
-    internal override Tag Parse(BinaryReader reader)
+    internal override Tag Parse(NBTReader reader)
     {
-        var length = BinaryPrimitives.ReverseEndianness(reader.ReadInt32());
+        var length = BinaryPrimitives.ReverseEndianness(reader.GetBinaryReader().ReadInt32());
         Values = new sbyte[length];
 
-        var asBytes = MemoryMarshal.Cast<sbyte, byte>(Values);
-        var readTotal = 0;
-        do
-        {
-            readTotal += reader.Read(asBytes[readTotal..]);
-        } while (readTotal != length);
-        
+        reader.ReadBytes(MemoryMarshal.Cast<sbyte, byte>(Values));
         return this;
     }
 

@@ -30,9 +30,9 @@ public class ShortTag : Tag
     }
 
     /// <inheritdoc/>
-    internal override Tag Parse(BinaryReader reader)
+    internal override Tag Parse(NBTReader reader)
     {
-        Value = BinaryPrimitives.ReverseEndianness(reader.ReadInt16());
+        Value = BinaryPrimitives.ReverseEndianness(reader.GetBinaryReader().ReadInt16());
         return this;
     }
 

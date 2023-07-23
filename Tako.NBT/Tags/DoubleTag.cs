@@ -30,9 +30,10 @@ public class DoubleTag : Tag
     }
 
     /// <inheritdoc/>
-    internal override Tag Parse(BinaryReader reader)
+    internal override Tag Parse(NBTReader reader)
     {
-        Value = reader.ReadDouble();
+        Value = reader.GetBinaryReader()
+            .ReadDouble();
         return this;
     }
 

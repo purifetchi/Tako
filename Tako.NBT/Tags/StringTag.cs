@@ -31,11 +31,9 @@ public class StringTag : Tag
 	}
 
 	/// <inheritdoc/>
-	internal override Tag Parse(BinaryReader reader)
+	internal override Tag Parse(NBTReader reader)
 	{
-		var length = BinaryPrimitives.ReverseEndianness(reader.ReadUInt16());
-		var data = reader.ReadBytes(length);
-		Value = Encoding.UTF8.GetString(data);
+		Value = reader.ReadString();
 		return this;
 	}
 

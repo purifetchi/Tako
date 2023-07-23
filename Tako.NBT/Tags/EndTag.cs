@@ -27,13 +27,13 @@ public class EndTag : Tag
     }
 
     /// <inheritdoc/>
-    internal override Tag Parse(BinaryReader reader)
+    internal override Tag Parse(NBTReader _)
     {
         return this;
     }
 
     /// <inheritdoc/>
-    internal override void Serialize(NBTWriter writer)
+    internal override void Serialize(NBTWriter _)
     {
     }
 }

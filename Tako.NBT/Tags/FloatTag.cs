@@ -30,9 +30,10 @@ public class FloatTag : Tag
     }
 
     /// <inheritdoc/>
-    internal override Tag Parse(BinaryReader reader)
+    internal override Tag Parse(NBTReader reader)
     {
-        Value = reader.ReadSingle();
+        Value = reader.GetBinaryReader()
+            .ReadSingle();
         return this;
     }
 

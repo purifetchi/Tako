@@ -73,12 +73,12 @@ public class CompoundTag : Tag
     }
 
     /// <inheritdoc/>
-    internal override Tag Parse(BinaryReader reader)
+    internal override Tag Parse(NBTReader reader)
     {
         Tag tag;
         do
         {
-            tag = ReadTag(reader);
+            tag = reader.Read();
             if (tag.Id != TagId.End)
                 Values.Add(tag.Name, tag);
         } while (tag.Id != TagId.End);
@@ -86,6 +86,7 @@ public class CompoundTag : Tag
         return this;
     }
 
+    /// <inheritdoc/>
     internal override void Serialize(NBTWriter writer)
     {
         foreach (var tag in Values.Values)

@@ -35,13 +35,13 @@ public class ListTag : Tag
     }
 
     /// <inheritdoc/>
-    internal override Tag Parse(BinaryReader reader)
+    internal override Tag Parse(NBTReader reader)
     {
-        ValueTagID = (TagId)reader.ReadByte();
-        var length = BinaryPrimitives.ReverseEndianness(reader.ReadInt32());
+        ValueTagID = reader.ReadTagId();
+        var length = BinaryPrimitives.ReverseEndianness(reader.GetBinaryReader().ReadInt32());
 
         for (var i = 0; i < length; i++)
-            Values.Add(ParseSingleTag(ValueTagID, string.Empty, reader));
+            Values.Add(reader.ReadSpecificTag(ValueTagID, string.Empty));
 
         return this;
     }

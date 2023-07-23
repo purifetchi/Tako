@@ -4,6 +4,7 @@ using Tako.Common.Numerics;
 using Tako.Definitions.Game;
 using Tako.Definitions.Game.World;
 using Tako.Definitions.Network;
+using Tako.NBT.Serialization;
 using Tako.NBT.Tags;
 using Tako.Server.Logging;
 
@@ -143,7 +144,8 @@ public class WorldGenerator : IWorldGenerator
 	/// <param name="filename">The filename.</param>
 	private void LoadFromFile(BaseWorld world, string filename)
 	{
-		var tag = (CompoundTag)Tag.FromFile(filename);
+		using var reader = new NBTReader(filename);
+		var tag = (CompoundTag)reader.Read();
 		world.LoadDataFromNBT(tag);
 	}
 }
