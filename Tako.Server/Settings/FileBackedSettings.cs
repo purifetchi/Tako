@@ -93,6 +93,8 @@ public class FileBackedSettings : ISettings
 		Set("realms-directory", "maps");
 		Set("autosave", "true");
 		Set("autosave-delay", "300");
+		Set("heartbeat", "true");
+		Set("heartbeat-url", "https://www.classicube.net/server/heartbeat/");
 
 		Save();
 	}

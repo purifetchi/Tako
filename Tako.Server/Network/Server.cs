@@ -9,6 +9,7 @@ using Tako.Definitions.Game.World;
 using Tako.Definitions.Network;
 using Tako.Definitions.Network.Connections;
 using Tako.Definitions.Settings;
+using Tako.Server.Authentication;
 using Tako.Server.Game;
 using Tako.Server.Game.Chat;
 using Tako.Server.Game.Players;
@@ -22,6 +23,9 @@ namespace Tako.Server.Network;
 /// </summary>
 public partial class Server : IServer
 {
+	/// <inheritdoc/>
+	public bool Active => _active;
+
 	/// <inheritdoc/>
 	public IRealmManager RealmManager { get; init; } = null!;
 
@@ -48,6 +52,11 @@ public partial class Server : IServer
 	/// The player id allocator.
 	/// </summary>
 	private readonly IdAllocator<sbyte> _playerIdAllocator;
+
+	/// <summary>
+	/// The heartbeat service.
+	/// </summary>
+	private HeartbeatService? _heartbeatService;
 
 	/// <summary>
 	/// Constructs a new server.
@@ -89,7 +98,9 @@ public partial class Server : IServer
 		_logger.Info($"Server started and listening.");
 		_active = true;
 
-		while (_active)
+		_heartbeatService = new HeartbeatService(this);
+
+        while (_active)
 		{
 			NetworkManager.Receive();
 			RealmManager.SimulateRealms();

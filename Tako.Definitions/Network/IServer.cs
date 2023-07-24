@@ -13,6 +13,11 @@ namespace Tako.Definitions.Network;
 public interface IServer
 {
 	/// <summary>
+	/// Is the server active?
+	/// </summary>
+	bool Active { get; }
+
+	/// <summary>
 	/// The realm manager of this server.
 	/// </summary>
 	IRealmManager RealmManager { get; }
