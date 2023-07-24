@@ -55,7 +55,7 @@ public class NBTWriter : IDisposable
         {
             NBTOptions.Default => underlying,
             NBTOptions.GZipCompressed => new GZipStream(underlying, CompressionMode.Compress),
-            NBTOptions.ZlibCompressed => throw new NotImplementedException("Zlib compression is not yet supported."),
+            NBTOptions.ZlibCompressed => new ZLibStream(underlying, CompressionMode.Compress),
             _ => throw new NotImplementedException("Invalid NBT option."),
         };
 
@@ -93,8 +93,44 @@ public class NBTWriter : IDisposable
         Span<byte> span = stackalloc byte[length];
         Encoding.UTF8.GetBytes(str, span);
 
-        _writer.Write(BinaryPrimitives.ReverseEndianness((short)str.Length));
+        WriteInt16((short)str.Length);
         _writer.Write(span);
+    }
+
+    /// <summary>
+    /// Writes a 2-byte signed short and reverses its endianness.
+    /// </summary>
+    /// <param name="value">The value.</param>
+    internal void WriteInt16(short value)
+    {
+        _writer.Write(BinaryPrimitives.ReverseEndianness(value));
+    }
+
+    /// <summary>
+    /// Writes a 2-byte unsigned short and reverses its endianness.
+    /// </summary>
+    /// <param name="value">The value.</param>
+    internal void WriteUInt16(ushort value)
+    {
+        _writer.Write(BinaryPrimitives.ReverseEndianness(value));
+    }
+
+    /// <summary>
+    /// Writes a 4-byte signed integer and reverses its endianness.
+    /// </summary>
+    /// <param name="value">The value.</param>
+    internal void WriteInt32(int value)
+    {
+        _writer.Write(BinaryPrimitives.ReverseEndianness(value));
+    }
+
+    /// <summary>
+    /// Writes a 8-byte signed long and reverses its endianness.
+    /// </summary>
+    /// <param name="value">The value.</param>
+    internal void WriteInt64(long value)
+    {
+        _writer.Write(BinaryPrimitives.ReverseEndianness(value));
     }
 
     /// <summary>

@@ -32,14 +32,13 @@ public class IntTag : Tag
     /// <inheritdoc/>
     internal override Tag Parse(NBTReader reader)
     {
-        Value = BinaryPrimitives.ReverseEndianness(reader.GetBinaryReader().ReadInt32());
+        Value = reader.ReadInt32();
         return this;
     }
 
     /// <inheritdoc/>
     internal override void Serialize(NBTWriter writer)
     {
-        writer.GetBinaryWriter()
-            .Write(BinaryPrimitives.ReverseEndianness(Value));
+        writer.WriteInt32(Value);
     }
 }

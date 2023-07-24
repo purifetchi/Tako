@@ -33,7 +33,7 @@ public class ByteArrayTag : Tag
     /// <inheritdoc/>
     internal override Tag Parse(NBTReader reader)
     {
-        var length = BinaryPrimitives.ReverseEndianness(reader.GetBinaryReader().ReadInt32());
+        var length = reader.ReadInt32();
         Values = new sbyte[length];
 
         reader.ReadBytes(MemoryMarshal.Cast<sbyte, byte>(Values));
@@ -44,7 +44,7 @@ public class ByteArrayTag : Tag
     internal override void Serialize(NBTWriter writer)
     {
         var bw = writer.GetBinaryWriter();
-        bw.Write(BinaryPrimitives.ReverseEndianness(Values.Length));
+        writer.WriteInt32(Values.Length);
 
         var asBytes = MemoryMarshal.Cast<sbyte, byte>(Values);
         bw.Write(asBytes);

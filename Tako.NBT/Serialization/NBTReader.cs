@@ -60,7 +60,7 @@ public class NBTReader : IDisposable
         _underlyingStream = magic switch
         {
             gzipHeaderByte => new GZipStream(underlying, CompressionMode.Decompress),
-            zlibHeaderByte => throw new NotSupportedException("Zlib compression not yet supported..."),
+            zlibHeaderByte => new ZLibStream(underlying, CompressionMode.Decompress),
             _ => underlying
         };
 
@@ -91,6 +91,42 @@ public class NBTReader : IDisposable
     internal TagId ReadTagId()
     {
         return (TagId)_reader.ReadByte();
+    }
+
+    /// <summary>
+    /// Reads a 2-byte signed short and reverses its endianness.
+    /// </summary>
+    /// <returns>The 2-byte signed short.</returns>
+    internal short ReadInt16()
+    {
+        return BinaryPrimitives.ReverseEndianness(_reader.ReadInt16());
+    }
+
+    /// <summary>
+    /// Reads a 2-byte unsigned short and reverses its endianness.
+    /// </summary>
+    /// <returns>The 2-byte unsigned short.</returns>
+    internal ushort ReadUInt16()
+    {
+        return BinaryPrimitives.ReverseEndianness(_reader.ReadUInt16());
+    }
+
+    /// <summary>
+    /// Reads a 4-byte signed integer and reverses its endianness.
+    /// </summary>
+    /// <returns>The 4-byte signed integer.</returns>
+    internal int ReadInt32()
+    {
+        return BinaryPrimitives.ReverseEndianness(_reader.ReadInt32());
+    }
+
+    /// <summary>
+    /// Reads a 8-byte signed long and reverses its endianness.
+    /// </summary>
+    /// <returns>The 8-byte signed long.</returns>
+    internal long ReadInt64()
+    {
+        return BinaryPrimitives.ReverseEndianness(_reader.ReadInt64());
     }
 
     /// <summary>
@@ -127,6 +163,8 @@ public class NBTReader : IDisposable
             TagId.String => new StringTag(name).Parse(this),
             TagId.List => new ListTag(name).Parse(this),
             TagId.Compound => new CompoundTag(name).Parse(this),
+            TagId.IntArray => new IntArrayTag(name).Parse(this),
+            TagId.LongArray => new LongArrayTag(name).Parse(this),
             _ => throw new NotSupportedException($"Unknown tag id detected! {tagId}"),
         };
     }
@@ -137,7 +175,7 @@ public class NBTReader : IDisposable
     /// <returns>The string.</returns>
     internal unsafe string ReadString()
     {
-        var nameLength = BinaryPrimitives.ReverseEndianness(_reader.ReadInt16());
+        var nameLength = ReadInt16();
         var nameBuffer = stackalloc byte[nameLength];
         var nameSpan = new Span<byte>(nameBuffer, nameLength);
         _reader.Read(nameSpan);

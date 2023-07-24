@@ -38,7 +38,7 @@ public class ListTag : Tag
     internal override Tag Parse(NBTReader reader)
     {
         ValueTagID = reader.ReadTagId();
-        var length = BinaryPrimitives.ReverseEndianness(reader.GetBinaryReader().ReadInt32());
+        var length = reader.ReadInt32();
 
         for (var i = 0; i < length; i++)
             Values.Add(reader.ReadSpecificTag(ValueTagID, string.Empty));
@@ -51,7 +51,7 @@ public class ListTag : Tag
     {
         var bw = writer.GetBinaryWriter();
         bw.Write((byte)ValueTagID);
-        bw.Write(BinaryPrimitives.ReverseEndianness(Values.Count));
+        writer.WriteInt32(Values.Count);
 
         foreach (var value in Values)
             value.Serialize(writer);
