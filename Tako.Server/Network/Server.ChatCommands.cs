@@ -21,6 +21,12 @@ public partial class Server
 	/// <param name="args">The args.</param>
 	private void OnOpCommand(IPlayer player, string[] args)
 	{
+		if (!player.Op)
+		{
+            Chat.SendServerMessageTo(player, "&You are not an OP.");
+            return;
+        }
+
 		var target = player.Realm
 			.Players
 			.Values
@@ -59,7 +65,13 @@ public partial class Server
 	/// <param name="args">The args.</param>
 	private void OnSaveCommand(IPlayer player, string[] args)
 	{
-		player.Realm?
+        if (!player.Op)
+        {
+            Chat.SendServerMessageTo(player, "&You are not an OP.");
+            return;
+        }
+
+        player.Realm?
 			.World?
 			.Save("test.cw");
 	}

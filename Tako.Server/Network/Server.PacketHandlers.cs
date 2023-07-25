@@ -37,6 +37,19 @@ public partial class Server
 			return;
 		}
 
+		if (_authenticatePlayers &&
+			_heartbeatService?.AuthenticatePlayer(packet.VerificationKey, packet.Username) != true)
+		{
+			_logger.Warn($"Player {packet.Username} failed authentication.");
+
+            conn?.Send(new Packets.Server.DisconnectPlayerPacket
+            {
+                DisconnectReason = "Player authentication failed."
+            });
+            conn?.Disconnect();
+            return;
+        }
+
 		var primaryRealm = RealmManager.GetDefaultRealm()!;
 
 		var player = AddPlayer(packet.Username, primaryRealm, conn);

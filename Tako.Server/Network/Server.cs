@@ -1,11 +1,9 @@
 ﻿using System.Net;
 using Tako.Common.Allocation;
 using Tako.Common.Logging;
-using Tako.Common.Numerics;
 using Tako.Definitions.Game;
 using Tako.Definitions.Game.Chat;
 using Tako.Definitions.Game.Players;
-using Tako.Definitions.Game.World;
 using Tako.Definitions.Network;
 using Tako.Definitions.Network.Connections;
 using Tako.Definitions.Settings;
@@ -23,99 +21,106 @@ namespace Tako.Server.Network;
 /// </summary>
 public partial class Server : IServer
 {
-	/// <inheritdoc/>
-	public bool Active => _active;
+    /// <inheritdoc/>
+    public bool Active => _active;
 
-	/// <inheritdoc/>
-	public IRealmManager RealmManager { get; init; } = null!;
+    /// <inheritdoc/>
+    public IRealmManager RealmManager { get; init; } = null!;
 
-	/// <inheritdoc/>
-	public INetworkManager NetworkManager { get; private set; } = null!;
+    /// <inheritdoc/>
+    public INetworkManager NetworkManager { get; private set; } = null!;
 
-	/// <inheritdoc/>
-	public IChat Chat { get; private set; } = null!;
+    /// <inheritdoc/>
+    public IChat Chat { get; private set; } = null!;
 
-	/// <inheritdoc/>
-	public ISettings Settings { get; init; } = null!;
+    /// <inheritdoc/>
+    public ISettings Settings { get; init; } = null!;
 
-	/// <summary>
-	/// The logger.
-	/// </summary>
-	private readonly ILogger<Server> _logger = LoggerFactory<Server>.Get();
+    /// <summary>
+    /// The logger.
+    /// </summary>
+    private readonly ILogger<Server> _logger = LoggerFactory<Server>.Get();
 
-	/// <summary>
-	/// Is the server active?
-	/// </summary>
-	private bool _active;
+    /// <summary>
+    /// Is the server active?
+    /// </summary>
+    private bool _active;
 
-	/// <summary>
-	/// The player id allocator.
-	/// </summary>
-	private readonly IdAllocator<sbyte> _playerIdAllocator;
+    /// <summary>
+    /// Should we authenticate players?
+    /// </summary>
+    private bool _authenticatePlayers;
 
-	/// <summary>
-	/// The heartbeat service.
-	/// </summary>
-	private HeartbeatService? _heartbeatService;
+    /// <summary>
+    /// The player id allocator.
+    /// </summary>
+    private readonly IdAllocator<sbyte> _playerIdAllocator;
 
-	/// <summary>
-	/// Constructs a new server.
-	/// </summary>
-	public Server()
-	{
-		Settings = new FileBackedSettings(
-			"server.properties", 
-			SetDefaultSettings);
+    /// <summary>
+    /// The heartbeat service.
+    /// </summary>
+    private HeartbeatService? _heartbeatService;
 
-		NetworkManager = new NetworkManager(
-			IPAddress.Parse(Settings.Get("ip") ?? "127.0.0.1"), 
-			int.Parse(Settings.Get("port") ?? "25565"));
+    /// <summary>
+    /// Constructs a new server.
+    /// </summary>
+    public Server()
+    {
+        Settings = new FileBackedSettings(
+            "server.properties",
+            SetDefaultSettings);
 
-		Chat = new Chat(this);
-		RealmManager = new RealmManager(this);
+        NetworkManager = new NetworkManager(
+            IPAddress.Parse(Settings.Get("ip") ?? "127.0.0.1"),
+            int.Parse(Settings.Get("port") ?? "25565"));
 
-		RegisterChatCommands();
-		RegisterHandlers();
+        Chat = new Chat(this);
+        RealmManager = new RealmManager(this);
 
-		_playerIdAllocator = new(sbyte.MaxValue);
-	}
+        RegisterChatCommands();
+        RegisterHandlers();
 
-	/// <summary>
-	/// Runs the server.
-	/// </summary>
-	public void Run()
-	{
-		_logger.Info($"Server started and listening.");
-		_active = true;
+        _playerIdAllocator = new(sbyte.MaxValue);
 
-		_heartbeatService = new HeartbeatService(this);
+        _authenticatePlayers = bool.Parse(Settings.Get("authenticate-players") ?? "true");
+    }
+
+    /// <summary>
+    /// Runs the server.
+    /// </summary>
+    public void Run()
+    {
+        _logger.Info($"Server started and listening.");
+        _active = true;
+
+        _heartbeatService = new HeartbeatService(this);
 
         while (_active)
-		{
-			NetworkManager.Receive();
-			RealmManager.SimulateRealms();
+        {
+            NetworkManager.Receive();
+            RealmManager.SimulateRealms();
 
-			Thread.Sleep(10);
-		}
-	}
+            Thread.Sleep(10);
+        }
+    }
 
-	/// <inheritdoc/>
-	public IPlayer AddPlayer(string name, IRealm realm, IConnection connection)
-	{
-		_logger.Debug($"Adding player {name} for connection {connection.ConnectionId}");
-		var player = new Player(
-			_playerIdAllocator.GetId(),
-			name,
-			false,
-			connection,
-			realm);
-		
-		return player;
-	}
+    /// <inheritdoc/>
+    public IPlayer AddPlayer(string name, IRealm realm, IConnection connection)
+    {
+        _logger.Debug($"Adding player {name} for connection {connection.ConnectionId}");
+        var player = new Player(
+            _playerIdAllocator.GetId(),
+            name,
+            false,
+            connection,
+            realm);
 
-	/// <inheritdoc/>
-	public void Shutdown()
-	{
-		_active = false;
-	}
+        return player;
+    }
+
+    /// <inheritdoc/>
+    public void Shutdown()
+    {
+        _active = false;
+    }
 }

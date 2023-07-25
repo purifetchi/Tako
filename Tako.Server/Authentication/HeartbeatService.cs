@@ -1,4 +1,6 @@
-﻿using Tako.Common.Logging;
+﻿using System.Security.Cryptography;
+using System.Text;
+using Tako.Common.Logging;
 using Tako.Definitions.Network;
 using Tako.Server.Logging;
 
@@ -69,6 +71,20 @@ internal class HeartbeatService
             Enumerable.Repeat(char.MinValue, length)
             .Select(_ => alphabet[Random.Shared.Next(alphabet.Length)])
             .ToArray());
+    }
+
+    /// <summary>
+    /// Authenticates a player given their authkey.
+    /// </summary>
+    /// <param name="authKey">The player's key.</param>
+    /// <param name="playerName">The player's name.</param>
+    /// <returns>Whether they are authenticated.</returns>
+    public bool AuthenticatePlayer(string authKey, string playerName)
+    {
+        var md5 = MD5.HashData(Encoding.ASCII.GetBytes(Salt + playerName))
+            .Select(x => x.ToString("X2"));
+
+        return authKey == string.Concat(md5).ToLower();
     }
 
     /// <summary>

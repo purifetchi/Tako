@@ -54,7 +54,7 @@ public class SocketConnection : IConnection
 	/// <inheritdoc/>
 	public bool HasData()
 	{
-		return _socket.Available > 0;
+		return Connected && _socket.Available > 0;
 	}
 
 	/// <inheritdoc/>
