@@ -8,24 +8,24 @@ namespace Tako.Server.Network.Packets.Server;
 /// </summary>
 public struct MessagePacket : IServerPacket
 {
-	/// <inheritdoc/>
-	public byte PacketId => 0x0d;
+    /// <inheritdoc/>
+    public byte PacketId => 0x0d;
 
-	/// <summary>
-	/// The player id.
-	/// </summary>
-	public sbyte PlayerId { get; set; }
+    /// <summary>
+    /// The player id.
+    /// </summary>
+    public sbyte PlayerId { get; set; }
 
-	/// <summary>
-	/// The message.
-	/// </summary>
-	public string Message { get; set; }
+    /// <summary>
+    /// The message.
+    /// </summary>
+    public string Message { get; set; }
 
-	/// <inheritdoc/>
-	public void Serialize(ref NetworkWriter writer)
-	{
-		writer.Write(PacketId);
-		writer.Write(PlayerId);
-		writer.WriteString(Message);
-	}
+    /// <inheritdoc/>
+    public void Serialize(ref NetworkWriter writer)
+    {
+        writer.Write(PacketId);
+        writer.Write(PlayerId);
+        writer.WriteString(Message);
+    }
 }

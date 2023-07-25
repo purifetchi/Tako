@@ -8,18 +8,18 @@ namespace Tako.Server.Network.Packets.Server;
 /// </summary>
 public struct DespawnPlayerPacket : IServerPacket
 {
-	/// <inheritdoc/>
-	public byte PacketId => 0x0c;
+    /// <inheritdoc/>
+    public byte PacketId => 0x0c;
 
-	/// <summary>
-	/// The player id.
-	/// </summary>
-	public sbyte PlayerId { get; set; }
+    /// <summary>
+    /// The player id.
+    /// </summary>
+    public sbyte PlayerId { get; set; }
 
-	/// <inheritdoc/>
-	public void Serialize(ref NetworkWriter writer)
-	{
-		writer.Write(PacketId);
-		writer.Write(PlayerId);
-	}
+    /// <inheritdoc/>
+    public void Serialize(ref NetworkWriter writer)
+    {
+        writer.Write(PacketId);
+        writer.Write(PlayerId);
+    }
 }

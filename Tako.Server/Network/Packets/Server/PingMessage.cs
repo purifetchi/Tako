@@ -10,12 +10,12 @@ namespace Tako.Server.Network.Packets.Server;
 /// </summary>
 public struct PingMessage : IServerPacket
 {
-	/// <inheritdoc/>
-	public byte PacketId => 0x01;
+    /// <inheritdoc/>
+    public byte PacketId => 0x01;
 
-	/// <inheritdoc/>
-	public void Serialize(ref NetworkWriter writer)
-	{
-		writer.Write(PacketId);
-	}
+    /// <inheritdoc/>
+    public void Serialize(ref NetworkWriter writer)
+    {
+        writer.Write(PacketId);
+    }
 }

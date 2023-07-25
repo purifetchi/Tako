@@ -4,25 +4,25 @@ namespace Tako.Server.Network;
 
 public partial class Server
 {
-	/// <summary>
-	/// Registers chat commands.
-	/// </summary>
-	private void RegisterChatCommands()
-	{
-		Chat.RegisterChatCommand("op", OnOpCommand);
-		Chat.RegisterChatCommand("move", OnMoveCommand);
-		Chat.RegisterChatCommand("save", OnSaveCommand);
-	}
+    /// <summary>
+    /// Registers chat commands.
+    /// </summary>
+    private void RegisterChatCommands()
+    {
+        Chat.RegisterChatCommand("op", OnOpCommand);
+        Chat.RegisterChatCommand("move", OnMoveCommand);
+        Chat.RegisterChatCommand("save", OnSaveCommand);
+    }
 
-	/// <summary>
-	/// Handles the /op command.
-	/// </summary>
-	/// <param name="player">The player.</param>
-	/// <param name="args">The args.</param>
-	private void OnOpCommand(IPlayer player, string[] args)
-	{
-		if (!player.Op)
-		{
+    /// <summary>
+    /// Handles the /op command.
+    /// </summary>
+    /// <param name="player">The player.</param>
+    /// <param name="args">The args.</param>
+    private void OnOpCommand(IPlayer player, string[] args)
+    {
+        if (!player.Op)
+        {
             Chat.SendServerMessageTo(player, "&cYou are not an OP.");
             return;
         }
@@ -34,49 +34,49 @@ public partial class Server
         }
 
         var target = player.Realm
-			.Players
-			.Values
-			.FirstOrDefault(player => player.Name == args[1]);
+            .Players
+            .Values
+            .FirstOrDefault(player => player.Name == args[1]);
 
-		if (target is null)
-		{
-			Chat.SendServerMessageTo(player, "&cThis player does not exist.");
-			return;
-		}
+        if (target is null)
+        {
+            Chat.SendServerMessageTo(player, "&cThis player does not exist.");
+            return;
+        }
 
-		target.SetOpStatus(!target.Op);
-	}
+        target.SetOpStatus(!target.Op);
+    }
 
-	/// <summary>
-	/// Handles the /move command.
-	/// </summary>
-	/// <param name="player">The player.</param>
-	/// <param name="args">The args.</param>
-	private void OnMoveCommand(IPlayer player, string[] args)
-	{
-		if (args.Length < 2)
-		{
+    /// <summary>
+    /// Handles the /move command.
+    /// </summary>
+    /// <param name="player">The player.</param>
+    /// <param name="args">The args.</param>
+    private void OnMoveCommand(IPlayer player, string[] args)
+    {
+        if (args.Length < 2)
+        {
             Chat.SendServerMessageTo(player, "&cNot enough arguments.");
             return;
         }
 
-		var realm = RealmManager.GetRealm(args[1]);
-		if (realm is null)
-		{
-			Chat.SendServerMessageTo(player, "&cThis realm does not exist.");
-			return;
-		}
+        var realm = RealmManager.GetRealm(args[1]);
+        if (realm is null)
+        {
+            Chat.SendServerMessageTo(player, "&cThis realm does not exist.");
+            return;
+        }
 
-		realm.MovePlayer(player);
-	}
+        realm.MovePlayer(player);
+    }
 
-	/// <summary>
-	/// Handles the /save command.
-	/// </summary>
-	/// <param name="player">The player.</param>
-	/// <param name="args">The args.</param>
-	private void OnSaveCommand(IPlayer player, string[] args)
-	{
+    /// <summary>
+    /// Handles the /save command.
+    /// </summary>
+    /// <param name="player">The player.</param>
+    /// <param name="args">The args.</param>
+    private void OnSaveCommand(IPlayer player, string[] args)
+    {
         if (!player.Op)
         {
             Chat.SendServerMessageTo(player, "&cYou are not an OP.");
@@ -84,7 +84,7 @@ public partial class Server
         }
 
         player.Realm?
-			.World?
-			.Save("test.cw");
-	}
+            .World?
+            .Save("test.cw");
+    }
 }

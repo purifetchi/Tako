@@ -8,12 +8,12 @@ namespace Tako.Server.Network.Packets.Server;
 /// </summary>
 public struct LevelInitializePacket : IServerPacket
 {
-	/// <inheritdoc/>
-	public byte PacketId => 0x02;
+    /// <inheritdoc/>
+    public byte PacketId => 0x02;
 
-	/// <inheritdoc/>
-	public void Serialize(ref NetworkWriter writer)
-	{
-		writer.Write(PacketId);
-	}
+    /// <inheritdoc/>
+    public void Serialize(ref NetworkWriter writer)
+    {
+        writer.Write(PacketId);
+    }
 }

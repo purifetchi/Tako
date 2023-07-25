@@ -9,18 +9,18 @@ namespace Tako.Server.Network.Packets.Server;
 /// </summary>
 public struct UpdatePlayerTypePacket : IServerPacket
 {
-	/// <inheritdoc/>
-	public byte PacketId => 0x0f;
+    /// <inheritdoc/>
+    public byte PacketId => 0x0f;
 
-	/// <summary>
-	/// The new player type.
-	/// </summary>
-	public PlayerType Type { get; set; }
+    /// <summary>
+    /// The new player type.
+    /// </summary>
+    public PlayerType Type { get; set; }
 
-	/// <inheritdoc/>
-	public void Serialize(ref NetworkWriter writer)
-	{
-		writer.Write(PacketId);
-		writer.Write(Type);
-	}
+    /// <inheritdoc/>
+    public void Serialize(ref NetworkWriter writer)
+    {
+        writer.Write(PacketId);
+        writer.Write(Type);
+    }
 }

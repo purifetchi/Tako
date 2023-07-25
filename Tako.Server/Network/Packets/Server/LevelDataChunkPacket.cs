@@ -9,30 +9,30 @@ namespace Tako.Server.Network.Packets.Server;
 /// </summary>
 public struct LevelDataChunkPacket : IServerPacket
 {
-	/// <inheritdoc/>
-	public byte PacketId => 0x03;
+    /// <inheritdoc/>
+    public byte PacketId => 0x03;
 
-	/// <summary>
-	/// The chunk length.
-	/// </summary>
-	public short ChunkLength { get; set; }
+    /// <summary>
+    /// The chunk length.
+    /// </summary>
+    public short ChunkLength { get; set; }
 
-	/// <summary>
-	/// The chunk data.
-	/// </summary>
-	public ArraySegment<byte> ChunkData { get; set; }
+    /// <summary>
+    /// The chunk data.
+    /// </summary>
+    public ArraySegment<byte> ChunkData { get; set; }
 
-	/// <summary>
-	/// The percentage of completeness.
-	/// </summary>
-	public byte PercentComplete { get; set; }
+    /// <summary>
+    /// The percentage of completeness.
+    /// </summary>
+    public byte PercentComplete { get; set; }
 
-	/// <inheritdoc/>
-	public void Serialize(ref NetworkWriter writer)
-	{
-		writer.Write(PacketId);
-		writer.WriteShortBigEndian(ChunkLength);
-		writer.WriteChunk(ChunkData);
-		writer.Write(PercentComplete);
-	}
+    /// <inheritdoc/>
+    public void Serialize(ref NetworkWriter writer)
+    {
+        writer.Write(PacketId);
+        writer.WriteShortBigEndian(ChunkLength);
+        writer.WriteChunk(ChunkData);
+        writer.Write(PercentComplete);
+    }
 }

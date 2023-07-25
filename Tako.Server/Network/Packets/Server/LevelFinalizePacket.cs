@@ -9,30 +9,30 @@ namespace Tako.Server.Network.Packets.Server;
 /// </summary>
 public struct LevelFinalizePacket : IServerPacket
 {
-	/// <inheritdoc/>
-	public byte PacketId => 0x04;
+    /// <inheritdoc/>
+    public byte PacketId => 0x04;
 
-	/// <summary>
-	/// The x size.
-	/// </summary>
-	public short XSize { get; set; }
+    /// <summary>
+    /// The x size.
+    /// </summary>
+    public short XSize { get; set; }
 
-	/// <summary>
-	/// The Y size.
-	/// </summary>
-	public short YSize { get; set; }
+    /// <summary>
+    /// The Y size.
+    /// </summary>
+    public short YSize { get; set; }
 
-	/// <summary>
-	/// The Z size.
-	/// </summary>
-	public short ZSize { get; set; }
+    /// <summary>
+    /// The Z size.
+    /// </summary>
+    public short ZSize { get; set; }
 
-	/// <inheritdoc/>
-	public void Serialize(ref NetworkWriter writer)
-	{
-		writer.Write(PacketId);
-		writer.WriteShortBigEndian(XSize);
-		writer.WriteShortBigEndian(YSize);
-		writer.WriteShortBigEndian(ZSize);
-	}
+    /// <inheritdoc/>
+    public void Serialize(ref NetworkWriter writer)
+    {
+        writer.Write(PacketId);
+        writer.WriteShortBigEndian(XSize);
+        writer.WriteShortBigEndian(YSize);
+        writer.WriteShortBigEndian(ZSize);
+    }
 }

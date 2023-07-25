@@ -1,5 +1,4 @@
-﻿using System.Buffers;
-using Tako.Common.Logging;
+﻿using Tako.Common.Logging;
 using Tako.Definitions.Game;
 using Tako.Definitions.Game.Chat;
 using Tako.Definitions.Game.Players;
@@ -14,111 +13,111 @@ namespace Tako.Server.Game.Chat;
 /// </summary>
 public class Chat : IChat
 {
-	/// <summary>
-	/// The fallback chat template.
-	/// </summary>
-	private const string FALLBACK_CHAT_TEMPLATE = "<{0}>: {1}";
+    /// <summary>
+    /// The fallback chat template.
+    /// </summary>
+    private const string FALLBACK_CHAT_TEMPLATE = "<{0}>: {1}";
 
-	/// <inheritdoc/>
-	public IServer Server { get; init; }
+    /// <inheritdoc/>
+    public IServer Server { get; init; }
 
-	/// <inheritdoc/>
-	public string MessageTemplate { get; set; }
+    /// <inheritdoc/>
+    public string MessageTemplate { get; set; }
 
-	/// <summary>
-	/// The logger.
-	/// </summary>
-	private readonly ILogger<Chat> _logger = LoggerFactory<Chat>.Get();
+    /// <summary>
+    /// The logger.
+    /// </summary>
+    private readonly ILogger<Chat> _logger = LoggerFactory<Chat>.Get();
 
-	/// <summary>
-	/// The chat commands.
-	/// </summary>
-	private Dictionary<string, Action<IPlayer, string[]>> _commands;
+    /// <summary>
+    /// The chat commands.
+    /// </summary>
+    private Dictionary<string, Action<IPlayer, string[]>> _commands;
 
-	/// <summary>
-	/// Creates a new chat.
-	/// </summary>
-	/// <param name="server">The server it's bound to.</param>
-	public Chat(IServer server)
-	{
-		Server = server;
-		MessageTemplate = Server.Settings.Get("chat-template") ?? FALLBACK_CHAT_TEMPLATE;
+    /// <summary>
+    /// Creates a new chat.
+    /// </summary>
+    /// <param name="server">The server it's bound to.</param>
+    public Chat(IServer server)
+    {
+        Server = server;
+        MessageTemplate = Server.Settings.Get("chat-template") ?? FALLBACK_CHAT_TEMPLATE;
 
-		_commands = new();
-	}
+        _commands = new();
+    }
 
-	/// <inheritdoc/>
-	public void RegisterChatCommand(string name, Action<IPlayer, string[]> handler)
-	{
-		_logger.Info($"Registered command {name}.");
+    /// <inheritdoc/>
+    public void RegisterChatCommand(string name, Action<IPlayer, string[]> handler)
+    {
+        _logger.Info($"Registered command {name}.");
 
-		// TODO(pref): Maybe not making this allocate would be better but w/e.
-		_commands[name] = handler;
-	}
+        // TODO(pref): Maybe not making this allocate would be better but w/e.
+        _commands[name] = handler;
+    }
 
-	/// <inheritdoc/>
-	public void SendMessage(IPlayer source, string message)
-	{
-		// If this is a command.
-		if (message.StartsWith('/'))
-		{
-			ParseCommand(source, message[1..].Split(' '));
-			return;
-		}
+    /// <inheritdoc/>
+    public void SendMessage(IPlayer source, string message)
+    {
+        // If this is a command.
+        if (message.StartsWith('/'))
+        {
+            ParseCommand(source, message[1..].Split(' '));
+            return;
+        }
 
-		var filled = string.Format(MessageTemplate, source.Name, message);
-		_logger.Info(filled);
+        var filled = string.Format(MessageTemplate, source.Name, message);
+        _logger.Info(filled);
 
-		source.Realm.SendToAllWithinRealm(new MessagePacket
-		{
-			PlayerId = 0x00,
-			Message = filled
-		});
-	}
+        source.Realm.SendToAllWithinRealm(new MessagePacket
+        {
+            PlayerId = 0x00,
+            Message = filled
+        });
+    }
 
-	/// <inheritdoc/>
-	public void SendServerMessage(string message)
-	{
-		Server.NetworkManager.SendToAll(new MessagePacket
-		{
-			PlayerId = -1,
-			Message = message
-		});
-	}
+    /// <inheritdoc/>
+    public void SendServerMessage(string message)
+    {
+        Server.NetworkManager.SendToAll(new MessagePacket
+        {
+            PlayerId = -1,
+            Message = message
+        });
+    }
 
-	/// <inheritdoc/>
-	public void SendServerMessageTo(IPlayer dest, string message)
-	{
-		dest.Connection?.Send(new MessagePacket 
-		{ 
-			PlayerId = -1,
-			Message = message
-		});
-	}
+    /// <inheritdoc/>
+    public void SendServerMessageTo(IPlayer dest, string message)
+    {
+        dest.Connection?.Send(new MessagePacket
+        {
+            PlayerId = -1,
+            Message = message
+        });
+    }
 
-	/// <inheritdoc/>
-	public void SendServerMessageTo(IRealm realm, string message)
-	{
-		realm.SendToAllWithinRealm(new MessagePacket
-		{
-			PlayerId = -1,
-			Message = message
-		});
-	}
+    /// <inheritdoc/>
+    public void SendServerMessageTo(IRealm realm, string message)
+    {
+        realm.SendToAllWithinRealm(new MessagePacket
+        {
+            PlayerId = -1,
+            Message = message
+        });
+    }
 
-	/// <summary>
-	/// Parses a command.
-	/// </summary>
-	/// <param name="player">The player.</param>
-	/// <param name="command">The command.</param>
-	private void ParseCommand(IPlayer player, string[] command)
-	{
-		if (!_commands.TryGetValue(command[0], out var handler))
-		{
-			SendServerMessageTo(player, "&cThis command does not exist.");
-			return;
-		}
+    /// <summary>
+    /// Parses a command.
+    /// </summary>
+    /// <param name="player">The player.</param>
+    /// <param name="command">The command.</param>
+    private void ParseCommand(IPlayer player, string[] command)
+    {
+        if (!_commands.TryGetValue(command[0], out var handler))
+        {
+            SendServerMessageTo(player, "&cThis command does not exist.");
+            return;
+        }
 
-		handler(player, command);
-	}
+        handler(player, command);
+    }
 }
