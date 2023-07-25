@@ -148,5 +148,7 @@ public partial class RealmManager : IRealmManager
 			//			   where they unload their world and stuff, but that's for a later period.
 			SaveRealmWorld(realm);
         }
+
+		_server.Chat.SendServerMessage("Realms autosave complete.");
 	}
 }

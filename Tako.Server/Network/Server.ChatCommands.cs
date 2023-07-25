@@ -23,11 +23,17 @@ public partial class Server
 	{
 		if (!player.Op)
 		{
-            Chat.SendServerMessageTo(player, "&You are not an OP.");
+            Chat.SendServerMessageTo(player, "&cYou are not an OP.");
             return;
         }
 
-		var target = player.Realm
+        if (args.Length < 2)
+        {
+            Chat.SendServerMessageTo(player, "&cNot enough arguments.");
+            return;
+        }
+
+        var target = player.Realm
 			.Players
 			.Values
 			.FirstOrDefault(player => player.Name == args[1]);
@@ -48,6 +54,12 @@ public partial class Server
 	/// <param name="args">The args.</param>
 	private void OnMoveCommand(IPlayer player, string[] args)
 	{
+		if (args.Length < 2)
+		{
+            Chat.SendServerMessageTo(player, "&cNot enough arguments.");
+            return;
+        }
+
 		var realm = RealmManager.GetRealm(args[1]);
 		if (realm is null)
 		{
@@ -67,7 +79,7 @@ public partial class Server
 	{
         if (!player.Op)
         {
-            Chat.SendServerMessageTo(player, "&You are not an OP.");
+            Chat.SendServerMessageTo(player, "&cYou are not an OP.");
             return;
         }
 
