@@ -7,7 +7,7 @@ namespace Tako.Server.Game;
 /// <summary>
 /// Manages all of the realms.
 /// </summary>
-public class RealmManager : IRealmManager
+public partial class RealmManager : IRealmManager
 {
 	/// <summary>
 	/// The realms list.
@@ -54,8 +54,7 @@ public class RealmManager : IRealmManager
 
 		_lastAutosave = DateTimeOffset.Now.ToUnixTimeSeconds();
 
-		if (!Directory.Exists(_saveDirectory))
-			Directory.CreateDirectory(_saveDirectory);
+		LoadRealms();
     }
 
 	/// <inheritdoc/>
@@ -71,7 +70,11 @@ public class RealmManager : IRealmManager
 		_realms.Add(realm);
 
 		realm.AutoSave = opts.HasFlag(RealmCreationOptions.AutosaveEnabled);
-		return realm;
+
+		if (opts.HasFlag(RealmCreationOptions.LoadFromFileOnCreation))
+			LoadRealmWorld(realm);
+
+        return realm;
 	}
 
 	/// <inheritdoc/>
@@ -143,8 +146,7 @@ public class RealmManager : IRealmManager
 			// TODO(pref): Do not save realms that haven't had any activity for a prolonged period.
 			//			   In reality, we should probably put them into some sort of hibernation state
 			//			   where they unload their world and stuff, but that's for a later period.
-			realm.World?
-				.Save($"{_saveDirectory}/{realm.Name}.cw");
-		}
+			SaveRealmWorld(realm);
+        }
 	}
 }

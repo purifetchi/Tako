@@ -20,6 +20,26 @@ public struct Vector3Int
 		Z = z;
 	}
 
+	/// <summary>
+	/// Parses a string into a Vector3Int.
+	/// </summary>
+	/// <param name="value">The string value.</param>
+	/// <returns>The parsed vector.</returns>
+	public static Vector3Int Parse(string value)
+	{
+		const char separator = ',';
+
+		var splits = value.Split(separator)
+			.Select(split => split.Trim('[', ']', ' '))
+			.Select(int.Parse)
+			.ToArray();
+
+		return new Vector3Int(
+			splits[0],
+			splits[1],
+			splits[2]);
+	}
+
 	/// <inheritdoc/>
 	public override string ToString()
 	{

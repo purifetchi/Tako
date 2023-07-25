@@ -38,13 +38,16 @@ public class FileBackedSettings : ISettings
 	/// Creates a new settings instance with the path to the settings file.
 	/// </summary>
 	/// <param name="path">The path to the file.</param>
-	public FileBackedSettings(string path)
+	/// <param name="defaultsCreator">The function that defines the defaults for this settings instance.</param>
+	public FileBackedSettings(
+		string path, 
+		Action<ISettings> defaultsCreator)
 	{
 		_path = path;
 		_store = new Dictionary<string, string>();
 
 		if (!File.Exists(path))
-			LoadDefaults();
+			LoadDefaults(defaultsCreator);
 		else
 			LoadFromFile();
 
@@ -83,18 +86,10 @@ public class FileBackedSettings : ISettings
 	/// <summary>
 	/// Loads the default values.
 	/// </summary>
-	private void LoadDefaults()
+	/// <param name="defaultsCreator">The function responsible for setting all the defaults.</param>
+	private void LoadDefaults(Action<ISettings> defaultsCreator)
 	{
-		Set("server-name", "A Minecraft Classic server");
-		Set("motd", "Powered by Tako");
-		Set("port", "25565");
-		Set("ip", "127.0.0.1");
-		Set("chat-template", "<{0}>: {1}");
-		Set("realms-directory", "maps");
-		Set("autosave", "true");
-		Set("autosave-delay", "300");
-		Set("heartbeat", "true");
-		Set("heartbeat-url", "https://www.classicube.net/server/heartbeat/");
+		defaultsCreator(this);
 
 		Save();
 	}

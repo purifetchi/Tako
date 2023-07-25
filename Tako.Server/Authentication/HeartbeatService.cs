@@ -1,5 +1,4 @@
-﻿using System.Security.Cryptography;
-using Tako.Common.Logging;
+﻿using Tako.Common.Logging;
 using Tako.Definitions.Network;
 using Tako.Server.Logging;
 
@@ -103,6 +102,8 @@ internal class HeartbeatService
             .Aggregate(0, (acc, realm) => acc += realm!.Players.Count);
 
         _logger.Info($"Sending heartbeat to: {_heartbeatBaseUrl}");
+
+        // TODO(pref): Unhardcode some of these things.
         var resp = await client.GetAsync($"?port={_server.Settings.Get("port")}&max=128&name={_server.Settings.Get("server-name")}&public=True&version=7&salt={Salt}&users={players}&software={serverName}");
         _logger.Debug(await resp.Content.ReadAsStringAsync());
     }

@@ -63,7 +63,9 @@ public partial class Server : IServer
 	/// </summary>
 	public Server()
 	{
-		Settings = new FileBackedSettings("server.properties");
+		Settings = new FileBackedSettings(
+			"server.properties", 
+			SetDefaultSettings);
 
 		NetworkManager = new NetworkManager(
 			IPAddress.Parse(Settings.Get("ip") ?? "127.0.0.1"), 
@@ -76,18 +78,6 @@ public partial class Server : IServer
 		RegisterHandlers();
 
 		_playerIdAllocator = new(sbyte.MaxValue);
-
-		RealmManager.GetOrCreateRealm("default")
-			.GetWorldGenerator()
-			.WithDimensions(new Vector3Int(30, 20, 30))
-			.WithType(WorldType.Flat)
-			.Build();
-
-		RealmManager.GetOrCreateRealm("test", RealmCreationOptions.None)
-			.GetWorldGenerator()
-			.WithDimensions(new Vector3Int(50, 30, 50))
-			.WithType(WorldType.Flat)
-			.Build();
 	}
 
 	/// <summary>
