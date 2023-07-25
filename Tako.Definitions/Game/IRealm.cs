@@ -3,6 +3,7 @@ using Tako.Definitions.Game.World;
 using Tako.Definitions.Network;
 using Tako.Definitions.Network.Connections;
 using Tako.Definitions.Network.Packets;
+using Tako.Definitions.Plugins.Events;
 
 namespace Tako.Definitions.Game;
 
@@ -41,11 +42,16 @@ public interface IRealm
 	/// </summary>
 	IReadOnlyDictionary<sbyte, IPlayer> Players { get; }
 
-	/// <summary>
-	/// Gets the world generator for a realm.
-	/// </summary>
-	/// <returns>The world generator.</returns>
-	IWorldGenerator GetWorldGenerator();
+    /// <summary>
+    /// The event for when a player joins a realm
+    /// </summary>
+    IEvent<IPlayer> OnPlayerJoinedRealm { get; }
+
+    /// <summary>
+    /// Gets the world generator for a realm.
+    /// </summary>
+    /// <returns>The world generator.</returns>
+    IWorldGenerator GetWorldGenerator();
 
 	/// <summary>
 	/// Sends this packet to all people within this realm.

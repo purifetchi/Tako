@@ -6,12 +6,14 @@ using Tako.Definitions.Game.Chat;
 using Tako.Definitions.Game.Players;
 using Tako.Definitions.Network;
 using Tako.Definitions.Network.Connections;
+using Tako.Definitions.Plugins;
 using Tako.Definitions.Settings;
 using Tako.Server.Authentication;
 using Tako.Server.Game;
 using Tako.Server.Game.Chat;
 using Tako.Server.Game.Players;
 using Tako.Server.Logging;
+using Tako.Server.Plugins.Test;
 using Tako.Server.Settings;
 
 namespace Tako.Server.Network;
@@ -57,6 +59,11 @@ public partial class Server : IServer
     private readonly IdAllocator<sbyte> _playerIdAllocator;
 
     /// <summary>
+    /// The plugins list.
+    /// </summary>
+    private readonly List<Plugin> _plugins;
+
+    /// <summary>
     /// The heartbeat service.
     /// </summary>
     private HeartbeatService? _heartbeatService;
@@ -83,6 +90,11 @@ public partial class Server : IServer
         _playerIdAllocator = new(sbyte.MaxValue);
 
         _authenticatePlayers = bool.Parse(Settings.Get("authenticate-players") ?? "true");
+
+        _plugins = new List<Plugin>
+        {
+            new GreeterPlugin(this)
+        };
     }
 
     /// <summary>

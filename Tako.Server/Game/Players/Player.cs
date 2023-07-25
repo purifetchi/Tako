@@ -117,7 +117,7 @@ public class Player : IPlayer
             Yaw = Orientation.Yaw
         }, conn => conn != Connection);
 
-        Realm.Server.Chat.SendServerMessageTo(Realm, $"{Name} has joined!");
+        Realm.Server.Chat.SendServerMessageTo(Realm, $"{Name} has joined realm {Realm.Name}!");
     }
 
     /// <inheritdoc/>

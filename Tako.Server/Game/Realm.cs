@@ -5,9 +5,11 @@ using Tako.Definitions.Game.World;
 using Tako.Definitions.Network;
 using Tako.Definitions.Network.Connections;
 using Tako.Definitions.Network.Packets;
+using Tako.Definitions.Plugins.Events;
 using Tako.Server.Game.World;
 using Tako.Server.Logging;
 using Tako.Server.Network.Packets.Server;
+using Tako.Server.Plugins.Events;
 
 namespace Tako.Server.Game;
 
@@ -33,6 +35,9 @@ public class Realm : IRealm
 
     /// <inheritdoc/>
     public IReadOnlyDictionary<sbyte, IPlayer> Players => _players;
+
+    /// <inheritdoc/>
+    public IEvent<IPlayer> OnPlayerJoinedRealm { get; } = new Event<IPlayer>();
 
     /// <summary>
     /// The players list for this realm.
@@ -125,6 +130,8 @@ public class Realm : IRealm
 
             SpawnMissingPlayersFor(player);
         }
+
+        OnPlayerJoinedRealm.Send(player);
     }
 
     /// <inheritdoc/>
