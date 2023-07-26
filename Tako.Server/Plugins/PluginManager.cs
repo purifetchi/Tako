@@ -1,7 +1,10 @@
-﻿using Tako.Common.Logging;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Reflection;
+using Tako.Common.Logging;
 using Tako.Definitions.Network;
 using Tako.Definitions.Plugins;
 using Tako.Server.Logging;
+using Tako.Server.Plugins.Compilation;
 
 namespace Tako.Server.Plugins;
 
@@ -31,6 +34,16 @@ public class PluginManager : IPluginManager
     private readonly object?[] _ctorValues;
 
     /// <summary>
+    /// The plugin path.
+    /// </summary>
+    private readonly string _pluginPath;
+
+    /// <summary>
+    /// The plugin cache.
+    /// </summary>
+    private readonly PluginCache _cache;
+
+    /// <summary>
     /// The logger.
     /// </summary>
     private readonly ILogger<PluginManager> _logger = LoggerFactory<PluginManager>.Get();
@@ -44,23 +57,45 @@ public class PluginManager : IPluginManager
         _server = server;
         _ctorValues = new[] { _server };
 
+        _pluginPath = _server.Settings.Get("plugin-path") ?? "plugins";
+        if (!Directory.Exists(_pluginPath))
+            Directory.CreateDirectory(_pluginPath);
+
         _plugins = new();
+        _cache = new(_pluginPath);
+
+        LoadAllPlugins();
     }
 
     /// <inheritdoc/>
     public void AddPlugin<TPlugin>() 
         where TPlugin : Plugin
     {
-        var ctor = typeof(TPlugin)
-            .GetConstructor(_ctorArray);
+        AddPlugin(typeof(TPlugin));
+    }
+
+    /// <inheritdoc/>
+    public void AddPlugin(Type pluginType)
+    {
+        var ctor = pluginType.GetConstructor(_ctorArray);
 
         if (ctor is null)
             return;
 
-        _logger.Info($"Loading plugin of type {typeof(TPlugin).Name}");
+        _logger.Info($"Loading plugin of type {pluginType.Name}");
 
         var plugin = (Plugin)ctor.Invoke(_ctorValues);
         _plugins.Add(plugin);
+    }
+
+    /// <inheritdoc/>
+    public void AddAllPluginsFromAssembly(Assembly assembly)
+    {
+        var plugins = assembly.GetTypes()
+            .Where(type => type.IsAssignableTo(typeof(Plugin)));
+
+        foreach (var plugin in plugins)
+            AddPlugin(plugin);
     }
 
     /// <inheritdoc/>
@@ -78,7 +113,19 @@ public class PluginManager : IPluginManager
     /// <inheritdoc/>
     public void LoadAllPlugins()
     {
-        throw new NotImplementedException();
+        const string pattern = "*.cs";
+
+        using var context = new CompilationContext();
+
+        foreach (var plugin in Directory.GetFiles(_pluginPath, pattern))
+        {
+            var assembly = _cache.GetOrCompileAssemblyFor(
+                plugin,
+                context);
+
+            if (assembly is not null)
+                AddAllPluginsFromAssembly(assembly);
+        }
     }
 
     /// <inheritdoc/>

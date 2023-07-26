@@ -9,6 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.6.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Tako.Common\Tako.Common.csproj" />
     <ProjectReference Include="..\Tako.Definitions\Tako.Definitions.csproj" />
     <ProjectReference Include="..\Tako.NBT\Tako.NBT.csproj" />

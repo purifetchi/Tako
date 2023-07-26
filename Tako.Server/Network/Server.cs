@@ -14,7 +14,6 @@ using Tako.Server.Game.Chat;
 using Tako.Server.Game.Players;
 using Tako.Server.Logging;
 using Tako.Server.Plugins;
-using Tako.Server.Plugins.Test;
 using Tako.Server.Settings;
 
 namespace Tako.Server.Network;
@@ -91,7 +90,6 @@ public partial class Server : IServer
         _authenticatePlayers = bool.Parse(Settings.Get("authenticate-players") ?? "true");
 
         PluginManager = new PluginManager(this);
-        PluginManager.AddPlugin<GreeterPlugin>();
     }
 
     /// <summary>
