@@ -76,6 +76,9 @@ public class SocketConnection : IConnection
     /// <inheritdoc/>
     public void Send(ReadOnlySpan<byte> data)
     {
+        if (!Connected)
+            return;
+
         try
         {
             _socket.Send(data);
