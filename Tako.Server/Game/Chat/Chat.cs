@@ -3,6 +3,7 @@ using Tako.Definitions.Game;
 using Tako.Definitions.Game.Chat;
 using Tako.Definitions.Game.Players;
 using Tako.Definitions.Network;
+using Tako.Definitions.Network.Packets;
 using Tako.Server.Logging;
 using Tako.Server.Network.Packets.Server;
 
@@ -68,11 +69,7 @@ public class Chat : IChat
         var filled = string.Format(MessageTemplate, source.Name, message);
         _logger.Info(filled);
 
-        source.Realm.SendToAllWithinRealm(new MessagePacket
-        {
-            PlayerId = 0x00,
-            Message = filled
-        });
+        SplitAndSendMessage(filled, source.Realm.SendToAllWithinRealm);
     }
 
     /// <inheritdoc/>
@@ -126,8 +123,40 @@ public class Chat : IChat
     /// </summary>
     /// <param name="message">The message.</param>
     /// <returns>A message enumerable.</returns>
-    private IEnumerable<MessagePacket> SplitMessage(string message)
+    private static void SplitAndSendMessage(
+        string message, 
+        Action<IServerPacket> sendMethod)
     {
-        yield return default;
+        const int maxMessageLength = 64;
+        const char continuationCharacter = '>';
+
+        if (message.Length <= maxMessageLength)
+        {
+            sendMethod(new MessagePacket
+            {
+                PlayerId = 0x00,
+                Message = message
+            });
+
+            return;
+        }
+
+        // Split the message into partitions.
+        var partitions = (int)Math.Ceiling(message.Length / (float)maxMessageLength);
+        for (var i = 0; i < partitions; i++)
+        {
+            var index = i * maxMessageLength;
+            var length = Math.Min(message.Length - index, maxMessageLength);
+
+            var split = message.Substring(index, length);
+            if (i > 0)
+                split = continuationCharacter + split;
+
+            sendMethod(new MessagePacket
+            {
+                PlayerId = 0x00,
+                Message = split
+            });
+        }
     }
 }
