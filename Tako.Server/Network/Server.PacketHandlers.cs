@@ -3,6 +3,7 @@ using Tako.Common.Numerics;
 using Tako.Definitions.Game.World;
 using Tako.Definitions.Network;
 using Tako.Definitions.Network.Connections;
+using Tako.Server.Game.Players;
 using Tako.Server.Network.Packets.Client;
 
 namespace Tako.Server.Network;
@@ -31,7 +32,7 @@ public partial class Server
         {
             conn?.Send(new Packets.Server.DisconnectPlayerPacket
             {
-                DisconnectReason = "Unsupported protocol version."
+                DisconnectReason = DisconnectMessages.PROTOCOL_MISMATCH
             });
             conn?.Disconnect();
             return;
@@ -44,7 +45,7 @@ public partial class Server
 
             conn?.Send(new Packets.Server.DisconnectPlayerPacket
             {
-                DisconnectReason = "Player authentication failed."
+                DisconnectReason = DisconnectMessages.INVALID_AUTHENTICATION_KEY
             });
             conn?.Disconnect();
             return;

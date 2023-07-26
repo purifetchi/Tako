@@ -3,6 +3,7 @@ using Tako.Common.Logging;
 using Tako.Common.Network.Serialization;
 using Tako.Definitions.Network.Connections;
 using Tako.Definitions.Network.Packets;
+using Tako.Server.Game.Players;
 using Tako.Server.Logging;
 
 namespace Tako.Server.Network.Packets;
@@ -62,7 +63,22 @@ public class PacketProcessor : IPacketProcessor
         }
 
         var packet = handler.Factory();
-        packet.Deserialize(ref reader);
+
+        try
+        {
+            packet.Deserialize(ref reader);
+        }
+        catch
+        {
+            _logger.Warn($"Packet corruption detected while trying to deserialize packet of id 0x{id:X2}. Disconnecting client {conn?.ConnectionId}.");
+
+            conn?.Send(new Server.DisconnectPlayerPacket
+            {
+                DisconnectReason = DisconnectMessages.CORRUPTED_PACKET_SENT
+            });
+            conn?.Disconnect();
+            return;
+        }
 
         //_logger.Debug($"Handling packet of id 0x{id:X2} and type {packet.GetType().Name}.");
         handler.Handler(conn, packet);
