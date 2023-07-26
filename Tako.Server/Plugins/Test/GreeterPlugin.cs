@@ -20,8 +20,10 @@ public class GreeterPlugin : Plugin
     public GreeterPlugin(IServer server)
         : base(server)
     {
-        server.RealmManager.GetDefaultRealm()?
-            .OnPlayerJoinedRealm.Subscribe(OnPlayerJoinedRealm);
+        server.RealmManager
+            .GetDefaultRealm()?
+            .OnPlayerJoinedRealm
+            .Subscribe(OnPlayerJoinedRealm);
     }
 
     /// <summary>

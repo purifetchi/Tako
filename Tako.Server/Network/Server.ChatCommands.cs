@@ -1,4 +1,5 @@
-﻿using Tako.Definitions.Game.Players;
+﻿using System.Text;
+using Tako.Definitions.Game.Players;
 
 namespace Tako.Server.Network;
 
@@ -12,6 +13,7 @@ public partial class Server
         Chat.RegisterChatCommand("op", OnOpCommand);
         Chat.RegisterChatCommand("move", OnMoveCommand);
         Chat.RegisterChatCommand("save", OnSaveCommand);
+        Chat.RegisterChatCommand("plugins", OnPluginsCommand);
     }
 
     /// <summary>
@@ -86,5 +88,25 @@ public partial class Server
         player.Realm?
             .World?
             .Save("test.cw");
+    }
+
+    /// <summary>
+    /// Handles the /plugins command.
+    /// </summary>
+    /// <param name="player">The player.</param>
+    /// <param name="args">The args.</param>
+    private void OnPluginsCommand(IPlayer player, string[] args)
+    {
+        Chat.SendServerMessageTo(player, "&fLoaded plugins:");
+
+        var sb = new StringBuilder();
+        sb.Append("&a");
+        foreach (var plugin in PluginManager.GetAllPlugins())
+        {
+            sb.Append(plugin.Name);
+            sb.Append(' ');
+        }
+
+        Chat.SendServerMessageTo(player, sb.ToString());
     }
 }

@@ -13,6 +13,7 @@ using Tako.Server.Game;
 using Tako.Server.Game.Chat;
 using Tako.Server.Game.Players;
 using Tako.Server.Logging;
+using Tako.Server.Plugins;
 using Tako.Server.Plugins.Test;
 using Tako.Server.Settings;
 
@@ -38,6 +39,9 @@ public partial class Server : IServer
     /// <inheritdoc/>
     public ISettings Settings { get; init; } = null!;
 
+    /// <inheritdoc/>
+    public IPluginManager PluginManager { get; init; } = null!;
+
     /// <summary>
     /// The logger.
     /// </summary>
@@ -57,11 +61,6 @@ public partial class Server : IServer
     /// The player id allocator.
     /// </summary>
     private readonly IdAllocator<sbyte> _playerIdAllocator;
-
-    /// <summary>
-    /// The plugins list.
-    /// </summary>
-    private readonly List<Plugin> _plugins;
 
     /// <summary>
     /// The heartbeat service.
@@ -91,10 +90,8 @@ public partial class Server : IServer
 
         _authenticatePlayers = bool.Parse(Settings.Get("authenticate-players") ?? "true");
 
-        _plugins = new List<Plugin>
-        {
-            new GreeterPlugin(this)
-        };
+        PluginManager = new PluginManager(this);
+        PluginManager.AddPlugin<GreeterPlugin>();
     }
 
     /// <summary>

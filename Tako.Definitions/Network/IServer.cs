@@ -3,6 +3,7 @@ using Tako.Definitions.Game.Chat;
 using Tako.Definitions.Game.Players;
 using Tako.Definitions.Game.World;
 using Tako.Definitions.Network.Connections;
+using Tako.Definitions.Plugins;
 using Tako.Definitions.Settings;
 
 namespace Tako.Definitions.Network;
@@ -36,6 +37,11 @@ public interface IServer
 	/// The server settings.
 	/// </summary>
 	ISettings Settings { get; }
+
+	/// <summary>
+	/// The plugin manager.
+	/// </summary>
+	IPluginManager PluginManager { get; }
 
 	/// <summary>
 	/// Adds a player for the given connection.
