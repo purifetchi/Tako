@@ -39,6 +39,9 @@ public class Realm : IRealm
     /// <inheritdoc/>
     public IEvent<IPlayer> OnPlayerJoinedRealm { get; } = new Event<IPlayer>();
 
+    /// <inheritdoc/>
+    public IEvent<IPlayer> OnPlayerLeftRealm { get; } = new Event<IPlayer>();
+
     /// <summary>
     /// The players list for this realm.
     /// </summary>
@@ -153,6 +156,8 @@ public class Realm : IRealm
                 PlayerId = player.PlayerId
             });
         }
+
+        OnPlayerLeftRealm.Send(player);
     }
 
     /// <summary>

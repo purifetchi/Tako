@@ -48,6 +48,11 @@ public interface IRealm
     IEvent<IPlayer> OnPlayerJoinedRealm { get; }
 
     /// <summary>
+    /// The event for when a player leaves a realm
+    /// </summary>
+    IEvent<IPlayer> OnPlayerLeftRealm { get; }
+
+    /// <summary>
     /// Gets the world generator for a realm.
     /// </summary>
     /// <returns>The world generator.</returns>
