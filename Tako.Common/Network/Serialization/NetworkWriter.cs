@@ -90,14 +90,18 @@ public ref struct NetworkWriter
 	{
 		const int maxStringLength = 64;
 		const byte padding = 0x20;
-		if (str.Length > maxStringLength)
-			return;
 
-		var length = str.Length;
+		// Clamp the string into 64 chars if it exceeds.
+		// Not writing anything leads to protocol corruption.
+		ReadOnlySpan<char> chars = str;
+		if (str.Length > maxStringLength)
+            chars = chars[..maxStringLength];
+
+		var length = chars.Length;
 
 		var buffer = stackalloc byte[length];
 		var span = new Span<byte>(buffer, length);
-		var encoded = Encoding.ASCII.GetBytes(str, span);
+		var encoded = Encoding.ASCII.GetBytes(chars, span);
 
 		WriteBytes(span);
 

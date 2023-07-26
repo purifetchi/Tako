@@ -120,4 +120,14 @@ public class Chat : IChat
 
         handler(player, command);
     }
+
+    /// <summary>
+    /// Splits the message into 64 character chunks for sending.
+    /// </summary>
+    /// <param name="message">The message.</param>
+    /// <returns>A message enumerable.</returns>
+    private IEnumerable<MessagePacket> SplitMessage(string message)
+    {
+        yield return default;
+    }
 }
