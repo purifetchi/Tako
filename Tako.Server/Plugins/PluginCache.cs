@@ -1,7 +1,5 @@
 ﻿using System.Reflection;
 using System.Security.Cryptography;
-using Tako.Common.Logging;
-using Tako.Server.Logging;
 using Tako.Server.Plugins.Compilation;
 
 namespace Tako.Server.Plugins;
