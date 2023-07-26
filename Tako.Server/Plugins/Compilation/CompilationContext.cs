@@ -56,6 +56,9 @@ internal class CompilationContext : IDisposable
             AddNetRuntimeReference("System.IO.dll", list);
             AddNetRuntimeReference("System.Net.Http.dll", list);
             AddNetRuntimeReference("System.Net.Primitives.dll", list);
+            AddNetRuntimeReference("System.Collections.dll", list);
+            AddNetRuntimeReference("System.Collections.Concurrent.dll", list);
+            AddNetRuntimeReference("System.Collections.NonGeneric.dll", list);
 
             AddRegularReference("Tako.Definitions.dll", list);
             AddRegularReference("Tako.Common.dll", list);
