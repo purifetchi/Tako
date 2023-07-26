@@ -1,4 +1,5 @@
 ﻿using System.Numerics;
+using System.Runtime.CompilerServices;
 using Tako.Common.Logging;
 using Tako.Common.Numerics;
 using Tako.Definitions.Game;
@@ -79,6 +80,9 @@ public class WorldGenerator : IWorldGenerator
         {
             case WorldType.Flat:
                 BuildFlat(baseWorld);
+                break;
+
+            case WorldType.Hollow:
                 break;
 
             case WorldType.Classic:
