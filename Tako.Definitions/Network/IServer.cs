@@ -4,6 +4,7 @@ using Tako.Definitions.Game.Players;
 using Tako.Definitions.Game.World;
 using Tako.Definitions.Network.Connections;
 using Tako.Definitions.Plugins;
+using Tako.Definitions.Plugins.Events;
 using Tako.Definitions.Settings;
 
 namespace Tako.Definitions.Network;
@@ -42,6 +43,11 @@ public interface IServer
 	/// The plugin manager.
 	/// </summary>
 	IPluginManager PluginManager { get; }
+
+	/// <summary>
+	/// Sent when the server makes one simulation tick.
+	/// </summary>
+	IEvent<float> OnServerTick { get; } 
 
 	/// <summary>
 	/// Adds a player for the given connection.

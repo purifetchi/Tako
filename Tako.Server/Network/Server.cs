@@ -7,6 +7,7 @@ using Tako.Definitions.Game.Players;
 using Tako.Definitions.Network;
 using Tako.Definitions.Network.Connections;
 using Tako.Definitions.Plugins;
+using Tako.Definitions.Plugins.Events;
 using Tako.Definitions.Settings;
 using Tako.Server.Authentication;
 using Tako.Server.Game;
@@ -14,6 +15,7 @@ using Tako.Server.Game.Chat;
 using Tako.Server.Game.Players;
 using Tako.Server.Logging;
 using Tako.Server.Plugins;
+using Tako.Server.Plugins.Events;
 using Tako.Server.Settings;
 
 namespace Tako.Server.Network;
@@ -40,6 +42,9 @@ public partial class Server : IServer
 
     /// <inheritdoc/>
     public IPluginManager PluginManager { get; init; } = null!;
+
+    /// <inheritdoc/>
+    public IEvent<float> OnServerTick { get; init; }
 
     /// <summary>
     /// The logger.
@@ -81,6 +86,7 @@ public partial class Server : IServer
 
         Chat = new Chat(this);
         RealmManager = new RealmManager(this);
+        OnServerTick = new Event<float>();
 
         RegisterChatCommands();
         RegisterHandlers();
@@ -106,6 +112,8 @@ public partial class Server : IServer
         {
             NetworkManager.Receive();
             RealmManager.SimulateRealms();
+
+            OnServerTick.Send(float.Pi);
 
             Thread.Sleep(10);
         }
