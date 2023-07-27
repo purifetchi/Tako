@@ -151,4 +151,19 @@ public class Player : IPlayer
     {
         Realm = realm;
     }
+
+    /// <inheritdoc/>
+    public void Teleport(Vector3 position)
+    {
+        Position = position;
+        Connection?.Send(new SetPositionAndOrientationPacket
+        {
+            PlayerId = SELF_PLAYER_MARKER,
+            X = position.X,
+            Y = position.Y,
+            Z = position.Z,
+            Pitch = Orientation.Pitch,
+            Yaw = Orientation.Yaw
+        });
+    }
 }

@@ -59,6 +59,12 @@ public interface IPlayer
 	void SetPositionAndOrientation(Vector3 position, Orientation orientation);
 
 	/// <summary>
+	/// Teleports a player to a position.
+	/// </summary>
+	/// <param name="position">The position.</param>
+	void Teleport(Vector3 position);
+
+	/// <summary>
 	/// Spawns the player at the given position.
 	/// </summary>
 	/// <param name="position">The position.</param>
