@@ -31,6 +31,9 @@ public class Realm : IRealm
     public IWorld World { get; private set; } = null!;
 
     /// <inheritdoc/>
+    public IBlockManager BlockManager { get; private set; } = null!;
+
+    /// <inheritdoc/>
     public IServer Server { get; init; } = null!;
 
     /// <inheritdoc/>
@@ -104,6 +107,10 @@ public class Realm : IRealm
     /// <inheritdoc/>
     public void SetWorld(IWorld world)
     {
+        // Only create the block manager when we set a world.
+        // A realm without a world doesn't need to define any blocks.
+        BlockManager ??= new BlockManager();
+
         // TODO(pref): If we have players in this realm, switch them to this new world.
         World = world;
     }

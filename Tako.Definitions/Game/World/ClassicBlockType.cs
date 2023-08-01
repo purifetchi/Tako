@@ -54,5 +54,10 @@ public enum ClassicBlockType : byte
 	TNT,
 	Bookcase,
 	StoneVine,
-	Obsidian
+	Obsidian,
+
+	/// <summary>
+	/// Not a block. Sets the length of the enum.
+	/// </summary>
+	LENGTH
 }

@@ -84,18 +84,54 @@ public partial class Server
             return;
 
         var realm = player.Realm;
+        if (realm is null || realm.World is null)
+            return;
+
         var pos = new Vector3Int(packet.X, packet.Y, packet.Z);
 
-        _logger.Debug($"Changing block for realm '{realm?.Name}'");
+        _logger.Debug($"Changing block for realm '{realm.Name}'");
+
+        // Get the block definitions.
+        var blockId = realm
+            .World
+            .GetBlock(pos);
+
+        var oldBlock = player.Realm
+            .BlockManager
+            .GetBlockById(blockId)!;
+
+        var newBlock = player.Realm
+            .BlockManager
+            .GetBlockById(packet.BlockType);
+
+        if (newBlock is null)
+        {
+            player.Disconnect(string.Format(DisconnectMessages.INVALID_BLOCK_ID, blockId));
+            return;
+        }
 
         switch (packet.Mode)
         {
             case BlockChangeMode.Destroyed:
-                realm?.World?.SetBlock(pos, (byte)ClassicBlockType.Air);
+                if (!oldBlock.CanBreak(player))
+                {
+                    Chat.SendServerMessageTo(player, "&cSorry, you cannot break this block.");
+                    realm.World?.SetBlock(pos, oldBlock.Id);
+                    break;
+                }
+
+                realm.World?.SetBlock(pos, (byte)ClassicBlockType.Air);
                 break;
 
             case BlockChangeMode.Created:
-                realm?.World?.SetBlock(pos, packet.BlockType);
+                if (!newBlock.CanPlace(player))
+                {
+                    Chat.SendServerMessageTo(player, "&cSorry, you cannot place this block.");
+                    realm.World?.SetBlock(pos, oldBlock.Id);
+                    break;
+                }
+
+                realm.World?.SetBlock(pos, packet.BlockType);
                 break;
         }
     }

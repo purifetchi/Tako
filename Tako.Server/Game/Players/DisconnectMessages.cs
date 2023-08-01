@@ -19,4 +19,9 @@ internal static class DisconnectMessages
     /// A client sent us a bad authentication key.
     /// </summary>
     public const string INVALID_AUTHENTICATION_KEY = "Invalid authentication key.";
+
+    /// <summary>
+    /// A client tried to set an invalid block.
+    /// </summary>
+    public const string INVALID_BLOCK_ID = "Invalid block id {0}.";
 }

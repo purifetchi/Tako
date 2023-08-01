@@ -33,6 +33,11 @@ public interface IRealm
 	IWorld World { get; }
 
 	/// <summary>
+	/// This realm's block manager.
+	/// </summary>
+	IBlockManager BlockManager { get; }
+
+	/// <summary>
 	/// The server containing this realm.
 	/// </summary>
 	IServer Server { get; }
