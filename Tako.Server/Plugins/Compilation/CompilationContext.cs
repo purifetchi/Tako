@@ -109,9 +109,9 @@ internal class CompilationContext : IDisposable
         var result = compilation.Emit(output);
         if (!result.Success)
         {
-            Console.WriteLine("Compilation failed.");
+            _logger.Error($"Compilation for plugin {path} failed. Error log proceeds:");
             foreach (var line in result.Diagnostics)
-                Console.WriteLine(line);
+                _logger.Error($"* {line}");
 
             return null;
         }
