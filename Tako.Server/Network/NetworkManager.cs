@@ -1,13 +1,10 @@
-﻿using System.Net;
-using System.Net.Sockets;
-using Tako.Common.Allocation;
+﻿using Tako.Common.Allocation;
 using Tako.Common.Logging;
 using Tako.Common.Network.Serialization;
 using Tako.Definitions.Network;
 using Tako.Definitions.Network.Connections;
 using Tako.Definitions.Network.Packets;
 using Tako.Server.Logging;
-using Tako.Server.Network.Connections;
 using Tako.Server.Network.Packets;
 
 namespace Tako.Server.Network;
@@ -23,20 +20,18 @@ public class NetworkManager : INetworkManager
     /// <inheritdoc/>
     public IPacketProcessor PacketProcessor { get; init; }
 
-    /// <summary>
-    /// The allocator for connection ids.
-    /// </summary>
-    private readonly IdAllocator<byte> _idAllocator;
-
-    /// <summary>
-    /// The TCP listener.
-    /// </summary>
-    private readonly TcpListener _listener;
+    /// <inheritdoc/>
+    public IdAllocator<byte> IdAllocator { get; init; }
 
     /// <summary>
     /// The list of active connections.
     /// </summary>
     private readonly List<IConnection> _connections;
+
+    /// <summary>
+    /// The list of transport providers.
+    /// </summary>
+    private readonly List<ITransportProvider> _transportProviders;
 
     /// <summary>
     /// The logger.
@@ -46,34 +41,50 @@ public class NetworkManager : INetworkManager
     /// <summary>
     /// The outgoing buffer.
     /// </summary>
-    private Memory<byte> _outgoingBuffer;
+    private readonly Memory<byte> _outgoingBuffer;
 
     /// <summary>
     /// The queue for connections that should be removed.
     /// </summary>
-    private Queue<IConnection> _removeQueue;
+    private readonly Queue<IConnection> _removeQueue;
 
     /// <summary>
     /// Constructs a new network manager from the given address and port.
     /// </summary>
     /// <param name="addr">The address.</param>
     /// <param name="port">The port.</param>
-    public NetworkManager(IPAddress addr, int port)
+    public NetworkManager()
     {
         const int outgoingBufferSizeInBytes = 1024;
 
-        _idAllocator = new(byte.MaxValue);
+        IdAllocator = new(byte.MaxValue);
 
         _outgoingBuffer = new Memory<byte>(new byte[outgoingBufferSizeInBytes]);
         PacketProcessor = new PacketProcessor();
+        
+        _connections = new();
+        _transportProviders = new();
 
-        _connections = new List<IConnection>();
-        _listener = new TcpListener(addr, port);
+        _removeQueue = new();
+    }
 
-        _listener.Start();
-        _listener.BeginAcceptSocket(OnIncomingConnection, null);
+    /// <inheritdoc/>
+    public void StartListening()
+    {
+        foreach (var provider in _transportProviders)
+            provider.StartListening();
+    }
 
-        _removeQueue = new Queue<IConnection>();
+    /// <inheritdoc/>
+    public void StopListening()
+    {
+        foreach (var connection in _connections)
+            connection.Disconnect();
+
+        foreach (var provider in _transportProviders)
+            provider.StopListening();
+
+        _connections.Clear();
     }
 
     /// <inheritdoc/>
@@ -124,21 +135,20 @@ public class NetworkManager : INetworkManager
             conn!.Disconnect();
             _connections.Remove(conn!);
 
-            _idAllocator.ReleaseId(conn!.ConnectionId);
+            IdAllocator.ReleaseId(conn!.ConnectionId);
         }
     }
 
-    /// <summary>
-    /// Invoked when we have an incoming connection from the TcpListener.
-    /// </summary>
-    private void OnIncomingConnection(IAsyncResult? ar)
+    /// <inheritdoc/>
+    public void AddConnection(IConnection connection)
     {
-        var clientSocket = _listener.EndAcceptSocket(ar!);
-        _logger.Info($"Accepting incoming connection from {clientSocket.RemoteEndPoint}.");
+        _connections.Add(connection);
+    }
 
-        _connections.Add(new SocketConnection(clientSocket, _idAllocator.GetId()));
-
-        // Renew the socket accepting.
-        _listener.BeginAcceptSocket(OnIncomingConnection, null);
+    /// <inheritdoc/>
+    public void AddTransportProvider(ITransportProvider provider)
+    {
+        _logger.Info($"Added transport provider of type {provider.GetType().Name}");
+        _transportProviders.Add(provider);
     }
 }

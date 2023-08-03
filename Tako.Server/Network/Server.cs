@@ -80,9 +80,12 @@ public partial class Server : IServer
             "server.properties",
             SetDefaultSettings);
 
-        NetworkManager = new NetworkManager(
-            IPAddress.Parse(Settings.Get("ip") ?? "127.0.0.1"),
-            int.Parse(Settings.Get("port") ?? "25565"));
+        NetworkManager = new NetworkManager();
+        NetworkManager.AddTransportProvider(
+            new TcpTransportProvider(
+                Settings,
+                NetworkManager
+                ));
 
         Chat = new Chat(this);
         RealmManager = new RealmManager(this);
@@ -92,9 +95,8 @@ public partial class Server : IServer
         RegisterHandlers();
 
         _playerIdAllocator = new(sbyte.MaxValue);
-
         _authenticatePlayers = bool.Parse(Settings.Get("authenticate-players") ?? "true");
-
+        
         PluginManager = new PluginManager(this);
     }
 
@@ -103,6 +105,8 @@ public partial class Server : IServer
     /// </summary>
     public void Run()
     {
+        NetworkManager.StartListening();
+
         _logger.Info($"Server started and listening.");
         _active = true;
 
@@ -117,6 +121,8 @@ public partial class Server : IServer
 
             Thread.Sleep(10);
         }
+
+        NetworkManager.StopListening();
     }
 
     /// <inheritdoc/>
