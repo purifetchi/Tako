@@ -93,7 +93,7 @@ public class SocketConnection : IConnection
     /// <inheritdoc/>
     public unsafe void Send(IServerPacket packet)
     {
-        _logger.Debug($"Sending packet of type {packet.GetType().Name} to {_socket.RemoteEndPoint}");
+        _logger.Debug($"Sending packet of type {packet.GetType().Name} to {ConnectionId}");
 
         var buffer = stackalloc byte[2048];
         var span = new Span<byte>(buffer, 2048);

@@ -112,7 +112,7 @@ public class NetworkManager : INetworkManager
             while (connection.HasData())
             {
                 var reader = connection.GetReader();
-                while (reader.HasDataLeft)
+                while (reader.HasDataLeft && connection.Connected)
                     PacketProcessor.HandleIncomingPacket(ref reader, connection);
             }
         }
