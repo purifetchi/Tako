@@ -1,5 +1,4 @@
-﻿using System.Net;
-using Tako.Common.Allocation;
+﻿using Tako.Common.Allocation;
 using Tako.Common.Logging;
 using Tako.Definitions.Game;
 using Tako.Definitions.Game.Chat;
@@ -13,7 +12,6 @@ using Tako.Server.Authentication;
 using Tako.Server.Game;
 using Tako.Server.Game.Chat;
 using Tako.Server.Game.Players;
-using Tako.Server.Logging;
 using Tako.Server.Plugins;
 using Tako.Server.Plugins.Events;
 using Tako.Server.Settings;
@@ -59,7 +57,7 @@ public partial class Server : IServer
     /// <summary>
     /// Should we authenticate players?
     /// </summary>
-    private bool _authenticatePlayers;
+    private readonly bool _authenticatePlayers;
 
     /// <summary>
     /// The player id allocator.

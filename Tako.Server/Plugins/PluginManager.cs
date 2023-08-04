@@ -1,9 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Reflection;
+﻿using System.Reflection;
 using Tako.Common.Logging;
 using Tako.Definitions.Network;
 using Tako.Definitions.Plugins;
-using Tako.Server.Logging;
 using Tako.Server.Plugins.Compilation;
 
 namespace Tako.Server.Plugins;

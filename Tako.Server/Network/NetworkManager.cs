@@ -4,7 +4,6 @@ using Tako.Common.Network.Serialization;
 using Tako.Definitions.Network;
 using Tako.Definitions.Network.Connections;
 using Tako.Definitions.Network.Packets;
-using Tako.Server.Logging;
 using Tako.Server.Network.Packets;
 
 namespace Tako.Server.Network;

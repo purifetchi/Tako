@@ -4,7 +4,6 @@ using Tako.Common.Network.Serialization;
 using Tako.Definitions.Network.Connections;
 using Tako.Definitions.Network.Packets;
 using Tako.Server.Game.Players;
-using Tako.Server.Logging;
 
 namespace Tako.Server.Network.Packets;
 

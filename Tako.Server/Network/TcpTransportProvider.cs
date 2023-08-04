@@ -3,7 +3,6 @@ using System.Net.Sockets;
 using Tako.Common.Logging;
 using Tako.Definitions.Network;
 using Tako.Definitions.Settings;
-using Tako.Server.Logging;
 using Tako.Server.Network.Connections;
 
 namespace Tako.Server.Network;

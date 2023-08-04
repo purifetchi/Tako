@@ -3,7 +3,6 @@ using System.IO.Compression;
 using Tako.Common.Logging;
 using Tako.Common.Numerics;
 using Tako.Definitions.Network.Connections;
-using Tako.Server.Logging;
 using Tako.Server.Network.Packets.Server;
 
 namespace Tako.Server.Game.World;

@@ -7,7 +7,6 @@ using Tako.Definitions.Network.Connections;
 using Tako.Definitions.Network.Packets;
 using Tako.Definitions.Plugins.Events;
 using Tako.Server.Game.World;
-using Tako.Server.Logging;
 using Tako.Server.Network.Packets.Server;
 using Tako.Server.Plugins.Events;
 

@@ -3,7 +3,6 @@ using Tako.Common.Logging;
 using Tako.Common.Network.Serialization;
 using Tako.Definitions.Network.Connections;
 using Tako.Definitions.Network.Packets;
-using Tako.Server.Logging;
 
 namespace Tako.Server.Network.Connections;
 

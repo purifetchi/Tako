@@ -1,6 +1,5 @@
 ﻿using Tako.Common.Logging;
 using Tako.Definitions.Settings;
-using Tako.Server.Logging;
 
 namespace Tako.Server.Settings;
 

@@ -1,6 +1,4 @@
-﻿using Tako.Common.Logging;
-
-namespace Tako.Server.Logging;
+﻿namespace Tako.Common.Logging;
 
 /// <summary>
 /// A factory for ILogger classes.

@@ -6,7 +6,6 @@ using Tako.Definitions.Game.World;
 using Tako.Definitions.Network.Connections;
 using Tako.NBT.Serialization;
 using Tako.NBT.Tags;
-using Tako.Server.Logging;
 using Tako.Server.Network.Packets.Server;
 
 namespace Tako.Server.Game.World;

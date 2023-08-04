@@ -2,7 +2,6 @@
 using System.Text;
 using Tako.Common.Logging;
 using Tako.Definitions.Network;
-using Tako.Server.Logging;
 
 namespace Tako.Server.Authentication;
 

@@ -1,12 +1,10 @@
 ﻿using System.Numerics;
-using System.Runtime.CompilerServices;
 using Tako.Common.Logging;
 using Tako.Common.Numerics;
 using Tako.Definitions.Game;
 using Tako.Definitions.Game.World;
 using Tako.NBT.Serialization;
 using Tako.NBT.Tags;
-using Tako.Server.Logging;
 
 namespace Tako.Server.Game.World;
 

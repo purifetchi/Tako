@@ -1,6 +1,5 @@
 ﻿using Tako.Common.Logging;
 using Tako.Definitions.Game.World;
-using Tako.Server.Logging;
 
 namespace Tako.Server.Game.World;
 
@@ -47,7 +46,7 @@ public partial class BlockManager : IBlockManager
         // Get the ctor of the block
         var blockType = typeof(TBlock);
         var ctor = blockType.GetConstructor(new[] { typeof(byte) });
-        
+
         // Invalid block definition.
         if (ctor is null)
         {

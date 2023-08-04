@@ -2,7 +2,6 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Tako.Common.Logging;
-using Tako.Server.Logging;
 
 namespace Tako.Server.Plugins.Compilation;
 

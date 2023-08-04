@@ -4,7 +4,6 @@ using Tako.Definitions.Game.Chat;
 using Tako.Definitions.Game.Players;
 using Tako.Definitions.Network;
 using Tako.Definitions.Network.Packets;
-using Tako.Server.Logging;
 using Tako.Server.Network.Packets.Server;
 
 namespace Tako.Server.Game.Chat;
