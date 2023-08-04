@@ -23,5 +23,6 @@ public partial class Server
         settings.Set("heartbeat-url", "https://www.classicube.net/server/heartbeat/");
         settings.Set("authenticate-players", "true");
         settings.Set("plugin-path", "plugins");
+        settings.Set("max-players", "32");
     }
 }

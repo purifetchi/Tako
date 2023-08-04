@@ -9,7 +9,7 @@ using Tako.Server.Network.Packets;
 namespace Tako.Server.Network;
 
 /// <summary>
-/// The default network manager for Tako. Handles incoming tcp connections.
+/// The default network manager for Tako.
 /// </summary>
 public class NetworkManager : INetworkManager
 {
@@ -48,11 +48,15 @@ public class NetworkManager : INetworkManager
     private readonly Queue<IConnection> _removeQueue;
 
     /// <summary>
-    /// Constructs a new network manager from the given address and port.
+    /// The maximum amount of connections allowed.
     /// </summary>
-    /// <param name="addr">The address.</param>
-    /// <param name="port">The port.</param>
-    public NetworkManager()
+    private readonly int _maxConnections;
+
+    /// <summary>
+    /// Constructs a new network manager.
+    /// </summary>
+    /// <param name="maxConnections">The maximum amount of connections allowed.</param>
+    public NetworkManager(int maxConnections)
     {
         const int outgoingBufferSizeInBytes = 1024;
 
@@ -141,6 +145,15 @@ public class NetworkManager : INetworkManager
     /// <inheritdoc/>
     public void AddConnection(IConnection connection)
     {
+        if (_connections.Count + 1 > _maxConnections)
+        {
+            _logger.Warn($"Dropping connection {connection.ConnectionId} because of insufficient slots.");
+            connection.Disconnect();
+            IdAllocator.ReleaseId(connection.ConnectionId);
+
+            return;
+        }
+
         _connections.Add(connection);
     }
 

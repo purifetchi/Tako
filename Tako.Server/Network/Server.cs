@@ -87,7 +87,9 @@ public partial class Server : IServer
             "server.properties",
             SetDefaultSettings);
 
-        NetworkManager = new NetworkManager();
+        NetworkManager = new NetworkManager(
+            int.Parse(Settings.Get("max-players") ?? "128"));
+
         NetworkManager.AddTransportProvider(
             new TcpTransportProvider(
                 Settings,
