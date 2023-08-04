@@ -7,6 +7,7 @@ using Tako.Definitions.Network.Connections;
 using Tako.Definitions.Network.Packets;
 using Tako.Definitions.Plugins.Events;
 using Tako.Server.Game.World;
+using Tako.Server.Network;
 using Tako.Server.Network.Packets.Server;
 using Tako.Server.Plugins.Events;
 
@@ -57,7 +58,7 @@ public class Realm : IRealm
     /// <summary>
     /// Last time we've pinged all players.
     /// </summary>
-    private long _lastPingTime;
+    private float _lastPingTime;
 
     /// <summary>
     /// A realm.
@@ -173,7 +174,7 @@ public class Realm : IRealm
     {
         const int pingInterval = 5;
 
-        var time = DateTimeOffset.Now.ToUnixTimeSeconds();
+        var time = Server.Time;
         var shouldPing = time - _lastPingTime > pingInterval;
         if (shouldPing)
             _lastPingTime = time;

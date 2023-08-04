@@ -20,6 +20,11 @@ public interface IServer
 	bool Active { get; }
 
 	/// <summary>
+	/// The time (in seconds) since the server has started.
+	/// </summary>
+	float Time { get; }
+
+	/// <summary>
 	/// The realm manager of this server.
 	/// </summary>
 	IRealmManager RealmManager { get; }

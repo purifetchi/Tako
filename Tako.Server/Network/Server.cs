@@ -1,4 +1,5 @@
-﻿using Tako.Common.Allocation;
+﻿using System.Diagnostics;
+using Tako.Common.Allocation;
 using Tako.Common.Logging;
 using Tako.Definitions.Game;
 using Tako.Definitions.Game.Chat;
@@ -25,6 +26,9 @@ public partial class Server : IServer
 {
     /// <inheritdoc/>
     public bool Active => _active;
+
+    /// <inheritdoc/>
+    public float Time => _stopwatch?.ElapsedMilliseconds / 1000f ?? 0f;
 
     /// <inheritdoc/>
     public IRealmManager RealmManager { get; init; } = null!;
@@ -63,6 +67,11 @@ public partial class Server : IServer
     /// The player id allocator.
     /// </summary>
     private readonly IdAllocator<sbyte> _playerIdAllocator;
+    
+    /// <summary>
+    /// The server time stopwatch.
+    /// </summary>
+    private readonly Stopwatch _stopwatch;
 
     /// <summary>
     /// The heartbeat service.
@@ -94,7 +103,8 @@ public partial class Server : IServer
 
         _playerIdAllocator = new(sbyte.MaxValue);
         _authenticatePlayers = bool.Parse(Settings.Get("authenticate-players") ?? "true");
-        
+        _stopwatch = new();
+
         PluginManager = new PluginManager(this);
     }
 
@@ -107,6 +117,7 @@ public partial class Server : IServer
 
         _logger.Info($"Server started and listening.");
         _active = true;
+        _stopwatch.Start();
 
         _heartbeatService = new HeartbeatService(this);
 

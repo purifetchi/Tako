@@ -37,7 +37,7 @@ public partial class RealmManager : IRealmManager
     /// <summary>
     /// Last autosave.
     /// </summary>
-    private long _lastAutosave;
+    private float _lastAutosave;
 
     /// <summary>
     /// Creates a new realm manager.
@@ -52,7 +52,7 @@ public partial class RealmManager : IRealmManager
         _autosaveEnabled = bool.Parse(server.Settings.Get("autosave") ?? "true");
         _autosaveDelay = int.Parse(server.Settings.Get("autosave-delay") ?? "300");
 
-        _lastAutosave = DateTimeOffset.Now.ToUnixTimeSeconds();
+        _lastAutosave = _server.Time;
 
         LoadRealms();
     }
@@ -126,10 +126,10 @@ public partial class RealmManager : IRealmManager
         }
 
         if (_autosaveEnabled &&
-            DateTimeOffset.Now.ToUnixTimeSeconds() - _lastAutosave >= _autosaveDelay)
+            _server.Time - _lastAutosave >= _autosaveDelay)
         {
             AutosaveRealms();
-            _lastAutosave = DateTimeOffset.Now.ToUnixTimeSeconds();
+            _lastAutosave = _server.Time;
         }
     }
 
