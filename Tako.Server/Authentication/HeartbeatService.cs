@@ -119,7 +119,7 @@ internal class HeartbeatService
         _logger.Info($"Sending heartbeat to: {_heartbeatBaseUrl}");
 
         // TODO(pref): Unhardcode some of these things.
-        var resp = await client.GetAsync($"?port={_server.Settings.Get("port")}&max={_server.Settings.Get("max-players")}&name={_server.Settings.Get("server -name")}&public=True&version=7&salt={Salt}&users={players}&software={serverName}");
+        var resp = await client.GetAsync($"?port={_server.Settings.Get("port")}&max={_server.Settings.Get("max-players")}&name={_server.Settings.Get("server-name")}&public=True&version=7&salt={Salt}&users={players}&software={serverName}");
         _logger.Debug(await resp.Content.ReadAsStringAsync());
     }
 }
