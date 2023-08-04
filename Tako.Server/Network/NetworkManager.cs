@@ -69,6 +69,8 @@ public class NetworkManager : INetworkManager
         _transportProviders = new();
 
         _removeQueue = new();
+
+        _maxConnections = maxConnections;
     }
 
     /// <inheritdoc/>
