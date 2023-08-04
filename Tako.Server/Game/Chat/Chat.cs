@@ -41,7 +41,7 @@ public class Chat : IChat
     public Chat(IServer server)
     {
         Server = server;
-        MessageTemplate = Server.Settings.Get("chat-template") ?? FALLBACK_CHAT_TEMPLATE;
+        MessageTemplate = Server.Settings.Get("chat-template", FALLBACK_CHAT_TEMPLATE);
 
         _commands = new();
     }

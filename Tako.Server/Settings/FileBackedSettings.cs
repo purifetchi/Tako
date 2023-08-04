@@ -1,4 +1,6 @@
-﻿using Tako.Common.Logging;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using Tako.Common.Logging;
 using Tako.Definitions.Settings;
 
 namespace Tako.Server.Settings;
@@ -60,6 +62,17 @@ public class FileBackedSettings : ISettings
             return value;
 
         return null;
+    }
+
+    /// <inheritdoc/>
+    public T Get<T>(string key, T fallback)
+    {
+        var value = Get(key);
+        if (value is null)
+            return fallback;
+
+        return (T)TypeDescriptor.GetConverter(typeof(T))
+            .ConvertFrom(value)!;
     }
 
     /// <inheritdoc/>

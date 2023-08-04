@@ -50,8 +50,8 @@ internal class HeartbeatService
 
         Salt = MakeSalt();
 
-        _heartbeatBaseUrl = _server.Settings.Get("heartbeat-url") ?? string.Empty;
-        _heartbeatEnabled = bool.Parse(_server.Settings.Get("heartbeat") ?? "false");
+        _heartbeatBaseUrl = _server.Settings.Get("heartbeat-url", string.Empty);
+        _heartbeatEnabled = _server.Settings.Get("heartbeat", false);
 
         if (_heartbeatEnabled)
             StartHeartbeating();

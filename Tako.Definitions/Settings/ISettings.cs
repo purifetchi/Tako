@@ -13,6 +13,15 @@ public interface ISettings
 	string? Get(string key);
 
 	/// <summary>
+	/// Gets a value by its key casting it to a specific type, with the fallback returned otherwise.
+	/// </summary>
+	/// <typeparam name="T">The type to cast to.</typeparam>
+	/// <param name="key">The key.</param>
+	/// <param name="fallback">The fallback.</param>
+	/// <returns>The value.</returns>
+	T Get<T>(string key, T fallback);
+
+	/// <summary>
 	/// Sets the value for a given key.
 	/// </summary>
 	/// <param name="key">The key.</param>

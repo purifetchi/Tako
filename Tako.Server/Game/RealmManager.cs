@@ -48,9 +48,9 @@ public partial class RealmManager : IRealmManager
         _server = server;
         _realms = new List<Realm>();
 
-        _saveDirectory = server.Settings.Get("realms-directory") ?? "maps";
-        _autosaveEnabled = bool.Parse(server.Settings.Get("autosave") ?? "true");
-        _autosaveDelay = int.Parse(server.Settings.Get("autosave-delay") ?? "300");
+        _saveDirectory = server.Settings.Get("realms-directory", "maps");
+        _autosaveEnabled = server.Settings.Get("autosave", true);
+        _autosaveDelay = server.Settings.Get("autosave-delay", 300);
 
         _lastAutosave = _server.Time;
 

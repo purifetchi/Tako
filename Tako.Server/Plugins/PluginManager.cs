@@ -55,7 +55,7 @@ public class PluginManager : IPluginManager
         _server = server;
         _ctorValues = new[] { _server };
 
-        _pluginPath = _server.Settings.Get("plugin-path") ?? "plugins";
+        _pluginPath = _server.Settings.Get("plugin-path", "plugins");
         if (!Directory.Exists(_pluginPath))
             Directory.CreateDirectory(_pluginPath);
 

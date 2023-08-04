@@ -87,8 +87,7 @@ public partial class Server : IServer
             "server.properties",
             SetDefaultSettings);
 
-        NetworkManager = new NetworkManager(
-            int.Parse(Settings.Get("max-players") ?? "128"));
+        NetworkManager = new NetworkManager(Settings.Get("max-players", 128));
 
         NetworkManager.AddTransportProvider(
             new TcpTransportProvider(
@@ -104,7 +103,7 @@ public partial class Server : IServer
         RegisterHandlers();
 
         _playerIdAllocator = new(sbyte.MaxValue);
-        _authenticatePlayers = bool.Parse(Settings.Get("authenticate-players") ?? "true");
+        _authenticatePlayers = Settings.Get("authenticate-players", true);
         _stopwatch = new();
 
         PluginManager = new PluginManager(this);
